@@ -1,10 +1,8 @@
-import express from 'express';
-import { getLatestJobsController , totalJobs } from '../controllers/jobsController';
+import { Router } from 'express';
+import { getAllJobs } from '../controllers/jobsController';
 
-const router = express.Router();
+const router = Router();
 
-//All Job Routes
-router.get('/latest', getLatestJobsController);
-router.get('/totalJobs' , totalJobs ) ;
+router.get('/all', getAllJobs);
 
 export default router;

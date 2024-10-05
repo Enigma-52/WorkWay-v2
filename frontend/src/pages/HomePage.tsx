@@ -1,39 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, ChevronDown } from "lucide-react";
-import JobCard from "../components/JobCard"; // Assuming you save the JobCard component in the same directory
+import JobCard from "../components/JobCard";
 import RecentApplications from "../components/RecentApplications";
 
-const HomePage = () => {
-  // State for tracking which dropdown is open
+interface Job {
+  id: string;
+  title: string;
+  updatedAt: string;
+  isExpired: boolean;
+  absolute_url: string;
+  location: string;
+  source: string;
+}
+
+interface CompanyJobs {
+  company: string;
+  data: { data: Job[] }[];
+}
+
+const HomePage: React.FC = () => {
   const [openDropdown, setOpenDropdown] = useState("");
-
-  // Sample job data to mock the real job data
-  const mockJobs = [
-    {
-      id: "1",
-      text: "Senior Software Engineer (Frontend)",
-      createdAt: "2024-09-28T13:00:00Z",
-      hostedUrl: "#",
-      categories: { location: "Poland - Remote" },
-    },
-    {
-      id: "2",
-      text: "Backend Developer",
-      createdAt: "2024-09-26T10:00:00Z",
-      hostedUrl: "#",
-      categories: { location: "Remote - USA" },
-    },
-    {
-      id: "3",
-      text: "Full-Stack Engineer",
-      createdAt: "2024-09-25T14:30:00Z",
-      hostedUrl: "#",
-      categories: { location: "Worldwide - Remote" },
-    },
-  ];
-
-  // Mock companies for each job
-  const companies = ["Userlane GmbH", "TechCorp", "InnoTech"];
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [totalJobs, setTotalJobs] = useState<number>(0);
+  const [companyJobs, setCompanyJobs] = useState<CompanyJobs[]>([]);
 
   const experienceLevels = [
     { label: "Junior", color: "bg-green-500" },
@@ -54,13 +45,43 @@ const HomePage = () => {
     "Data Science",
   ];
 
-  // Function to handle dropdown toggling
+  useEffect(() => {
+    const fetchJobs = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch("http://localhost:3000/api/jobs/all");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        const allJobs = data.jobs;
+
+        const companyJobs = data.jobs.map((job: any) => ({
+          company: job.company, // assuming job has a company property
+          data: [job],
+        }));
+
+        setJobs(allJobs);
+        setTotalJobs(allJobs.length);
+        setCompanyJobs(companyJobs);
+      } catch (err) {
+        setError(
+          "An error occurred while fetching jobs. Please try again later."
+        );
+        console.error("Error fetching jobs:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
+
   const toggleDropdown = (dropdown: string) => {
-    if (openDropdown === dropdown) {
-      setOpenDropdown(""); // Close if it's already open
-    } else {
-      setOpenDropdown(dropdown); // Open the selected one
-    }
+    setOpenDropdown(openDropdown === dropdown ? "" : dropdown);
   };
 
   return (
@@ -78,7 +99,7 @@ const HomePage = () => {
 
         <main className="text-center mb-16">
           <p className="text-green-400 mb-4 animate-pulse text-xl">
-            6624 active jobs
+            {totalJobs} active jobs
           </p>
           <h2 className="text-6xl font-bold mb-6 leading-tight">
             Find your Dream Job
@@ -97,104 +118,61 @@ const HomePage = () => {
           </div>
 
           <div className="flex flex-wrap justify-center gap-4 mb-8">
-            {/* Experience Dropdown */}
-            <div className="relative">
-              <button
-                className="bg-gray-800 hover:bg-gray-700 transition-colors px-5 py-3 rounded-full flex items-center text-lg"
-                onClick={() => toggleDropdown("experience")}
-              >
-                Experience <ChevronDown className="ml-2" size={16} />
-              </button>
-              {openDropdown === "experience" && (
-                <div className="absolute mt-2 w-48 bg-gray-800 rounded-lg shadow-lg p-2 z-10">
-                  {experienceLevels.map((level) => (
-                    <div
-                      key={level.label}
-                      className="flex items-center p-2 text-lg"
-                    >
-                      <span
-                        className={`w-3 h-3 rounded-full ${level.color} mr-2`}
-                      ></span>
-                      {level.label}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Employment Type Dropdown */}
-            <div className="relative">
-              <button
-                className="bg-gray-800 hover:bg-gray-700 transition-colors px-5 py-3 rounded-full flex items-center text-lg"
-                onClick={() => toggleDropdown("employment")}
-              >
-                Employment type <ChevronDown className="ml-2" size={16} />
-              </button>
-              {openDropdown === "employment" && (
-                <div className="absolute mt-2 w-48 bg-gray-800 rounded-lg shadow-lg p-2 z-10">
-                  {employmentTypes.map((type) => (
-                    <div key={type} className="p-2 text-lg">
-                      {type}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Location Dropdown */}
-            <div className="relative">
-              <button
-                className="bg-gray-800 hover:bg-gray-700 transition-colors px-5 py-3 rounded-full flex items-center text-lg"
-                onClick={() => toggleDropdown("location")}
-              >
-                Location <ChevronDown className="ml-2" size={16} />
-              </button>
-              {openDropdown === "location" && (
-                <div className="absolute mt-2 w-48 bg-gray-800 rounded-lg shadow-lg p-2 z-10">
-                  {locations.map((location) => (
-                    <div key={location} className="p-2 text-lg">
-                      {location}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Domain Dropdown */}
-            <div className="relative">
-              <button
-                className="bg-gray-800 hover:bg-gray-700 transition-colors px-5 py-3 rounded-full flex items-center text-lg"
-                onClick={() => toggleDropdown("domain")}
-              >
-                Domain <ChevronDown className="ml-2" size={16} />
-              </button>
-              {openDropdown === "domain" && (
-                <div className="absolute mt-2 w-48 bg-gray-800 rounded-lg shadow-lg p-2 z-10">
-                  {domains.map((domain) => (
-                    <div key={domain} className="p-2 text-lg">
-                      {domain}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Dropdowns */}
+            {[
+              {
+                name: "experience",
+                options: experienceLevels,
+                label: "Experience",
+              },
+              {
+                name: "employment",
+                options: employmentTypes,
+                label: "Employment type",
+              },
+              { name: "location", options: locations, label: "Location" },
+              { name: "domain", options: domains, label: "Domain" },
+            ].map((dropdown) => (
+              <div key={dropdown.name} className="relative">
+                <button
+                  className="bg-gray-800 hover:bg-gray-700 transition-colors px-5 py-3 rounded-full flex items-center text-lg"
+                  onClick={() => toggleDropdown(dropdown.name)}
+                >
+                  {dropdown.label} <ChevronDown className="ml-2" size={16} />
+                </button>
+                {openDropdown === dropdown.name && (
+                  <div className="absolute mt-2 w-48 bg-gray-800 rounded-lg shadow-lg p-2 z-10">
+                    {dropdown.options.map((option) => (
+                      <div
+                        key={typeof option === "object" ? option.label : option}
+                        className="p-2 text-lg flex items-center"
+                      >
+                        {typeof option === "object" && option.color && (
+                          <span
+                            className={`w-3 h-3 rounded-full ${option.color} mr-2`}
+                          ></span>
+                        )}
+                        {typeof option === "object" ? option.label : option}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 p-6">
               <h3 className="text-2xl font-semibold mb-4">Job Listings</h3>
-              <div className="space-y-4">
-                {mockJobs.map((job, index) => (
-                  <JobCard
-                    key={job.id}
-                    job={{
-                      ...job,
-                      createdAt: new Date(job.createdAt).toISOString(),
-                    }}
-                    company={companies[index]}
-                  />
-                ))}
-              </div>
+              {isLoading ? (
+                <p>Loading jobs...</p>
+              ) : error ? (
+                <p className="text-red-500">{error}</p>
+              ) : (
+                <div className="space-y-4">
+                  <JobCard jobs={companyJobs} />
+                </div>
+              )}
             </div>
             <RecentApplications />
           </div>

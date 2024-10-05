@@ -1,23 +1,24 @@
-import express, { Request, Response } from 'express';
-import verifyToken from './middleware/verifyToken';
-import jobRoutes from './routes/jobRoutes'; // Import the user routes
+import express, { Request } from 'express';
+import cors from 'cors'; 
+import jobRoutes from './routes/jobRoutes';
 
 const app = express();
 
-interface CustomRequest extends Request {
-    user: any;
-}
+// Enable CORS for all routes
+app.use(cors());
 
+// Middleware to parse JSON requests
 app.use(express.json());
 
-//Routes
+// Routes
 app.use('/api/jobs', jobRoutes);
 
-app.get('/api/user', verifyToken, (req: Request, res: Response) => {
-  const user = (req as CustomRequest).user; 
-  res.json({ user });
+// Health check API
+app.get('/health', (req: Request, res) => {
+    res.status(200).send({ message: 'All good' });
 });
 
+// Start the server
 app.listen(3000, () => {
-  console.log('Server running on port 3000');
+    console.log('Server running on port 3000');
 });
