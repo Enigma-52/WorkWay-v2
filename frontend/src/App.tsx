@@ -11,6 +11,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import HomePage from "./pages/HomePage";
+import Features from "./pages/Features";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -53,6 +54,7 @@ function App() {
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
         <Route path="/page" element={<HomePage />} />
+        <Route path="/features" element={<Features />} />
         {user && (
           <Route
             path="/"

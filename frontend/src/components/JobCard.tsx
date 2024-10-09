@@ -29,7 +29,7 @@ interface JobCardProps {
   itemsPerPage?: number;
 }
 
-const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 10 }) => {
+const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 5 }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(jobs.length / itemsPerPage);
