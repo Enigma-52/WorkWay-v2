@@ -188,6 +188,41 @@ const getExperienceLevel = (title: string): string => {
   }
 };
 
+const getEmploymentType = (title: string): string => {
+  const lowercaseTitle = title.toLowerCase();
+  
+  if (lowercaseTitle.includes("intern") || lowercaseTitle.includes("trainee")) {
+    return "Intern";
+  } else if (lowercaseTitle.includes("contract") || lowercaseTitle.includes("temporary")) {
+    return "Contract";
+  } else {
+    return "Full-time";
+  }
+};
+
+// Function to determine domain based on job title
+const getDomain = (title: string): string => {
+  const lowercaseTitle = title.toLowerCase();
+  
+  if (lowercaseTitle.includes("android")) {
+    return "Android";
+  } else if (lowercaseTitle.includes("backend") || lowercaseTitle.includes("back-end") || lowercaseTitle.includes("back end")) {
+    return "Backend";
+  } else if (lowercaseTitle.includes("frontend") || lowercaseTitle.includes("front-end") || lowercaseTitle.includes("front end")) {
+    return "Frontend";
+  } else if (lowercaseTitle.includes("ios")) {
+    return "iOS";
+  } else if (lowercaseTitle.includes("full stack") || lowercaseTitle.includes("fullstack") || lowercaseTitle.includes("full-stack")) {
+    return "Full-stack";
+  } else if (lowercaseTitle.includes("devops")) {
+    return "DevOps";
+  } else if (lowercaseTitle.includes("data scientist") || lowercaseTitle.includes("data science") || lowercaseTitle.includes("machine learning")) {
+    return "Data Science";
+  } else {
+    return "Other";
+  }
+};
+
 // Function to format job data based on the specified pattern
 const formatJobData = (job: Job, company: string) => removeUndefined({
   id: job.id,
@@ -198,7 +233,9 @@ const formatJobData = (job: Job, company: string) => removeUndefined({
   absolute_url: job.hostedUrl,
   location: job.categories?.location,
   source: "Lever",
-  experienceLevel: getExperienceLevel(job.text) 
+  experienceLevel: getExperienceLevel(job.text),
+  employmentType: getEmploymentType(job.text),
+  domain: getDomain(job.text),
 });
 
 async function fetchAllJobs(): Promise<void> {
