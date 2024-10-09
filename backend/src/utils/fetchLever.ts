@@ -165,6 +165,29 @@ const removeUndefined = (obj: any) => {
   );
 }
 
+// Function to determine experience level based on job title
+const getExperienceLevel = (title: string): string => {
+  const lowercaseTitle = title.toLowerCase();
+  
+  if (lowercaseTitle.includes("founder") || lowercaseTitle.includes("co-founder") || lowercaseTitle.includes("founding")) {
+    return "Founding Team";
+  } else if (lowercaseTitle.includes("lead") || lowercaseTitle.includes("architect")) {
+    return "Lead";
+  } else if (lowercaseTitle.includes("senior") || lowercaseTitle.includes("sr.")) {
+    return "Senior";
+  } else if (lowercaseTitle.includes("manager") || lowercaseTitle.includes("director")) {
+    return "Manager";
+  } else if (lowercaseTitle.includes("staff") || lowercaseTitle.includes("principal")) {
+    return "Staff";
+  } else if (lowercaseTitle.includes("junior") || lowercaseTitle.includes("jr.") || lowercaseTitle.includes("associate") || lowercaseTitle.includes("assisstant")) {
+    return "Junior";
+  } else if (lowercaseTitle.includes("intern") || lowercaseTitle.includes("trainee")) {
+    return "Intern";
+  } else {
+    return "Mid-level";
+  }
+};
+
 // Function to format job data based on the specified pattern
 const formatJobData = (job: Job, company: string) => removeUndefined({
   id: job.id,
@@ -175,6 +198,7 @@ const formatJobData = (job: Job, company: string) => removeUndefined({
   absolute_url: job.hostedUrl,
   location: job.categories?.location,
   source: "Lever",
+  experienceLevel: getExperienceLevel(job.text) 
 });
 
 async function fetchAllJobs(): Promise<void> {

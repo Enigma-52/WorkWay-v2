@@ -198,6 +198,29 @@ async function fetchData(url: string): Promise<any> {
   }
 }
 
+const getExperienceLevel = (title: string): string => {
+  const lowercaseTitle = title.toLowerCase();
+  
+  if (lowercaseTitle.includes("founder") || lowercaseTitle.includes("co-founder") || lowercaseTitle.includes("founding")) {
+    return "Founding Team";
+  } else if (lowercaseTitle.includes("lead") || lowercaseTitle.includes("architect")) {
+    return "Lead";
+  } else if (lowercaseTitle.includes("senior") || lowercaseTitle.includes("sr.")) {
+    return "Senior";
+  } else if (lowercaseTitle.includes("manager") || lowercaseTitle.includes("director")) {
+    return "Manager";
+  } else if (lowercaseTitle.includes("staff") || lowercaseTitle.includes("principal")) {
+    return "Staff";
+  } else if (lowercaseTitle.includes("junior") || lowercaseTitle.includes("jr.") || lowercaseTitle.includes("associate") || lowercaseTitle.includes("assisstant")) {
+    return "Junior";
+  } else if (lowercaseTitle.includes("intern") || lowercaseTitle.includes("trainee")) {
+    return "Intern";
+  } else {
+    return "Mid-level";
+  }
+};
+
+
 function processJobs(company: string, jobs: any[]): any[] {
   const currentDate = new Date();
   return jobs.map(job => ({
@@ -209,6 +232,7 @@ function processJobs(company: string, jobs: any[]): any[] {
     absolute_url: job.absolute_url,
     location: job.location.name,
     source: "Greenhouse",
+    experienceLevel: getExperienceLevel(job.title) 
   }));
 }
 

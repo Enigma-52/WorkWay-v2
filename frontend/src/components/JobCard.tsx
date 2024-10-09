@@ -56,7 +56,13 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 10 }) => {
       }));
     });
 
-    setFlattenedJobs(flattened);
+    // Sort the flattened jobs by date, most recent first
+    const sortedJobs = flattened.sort(
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+
+    setFlattenedJobs(sortedJobs);
   }, [jobs]);
 
   const totalPages = Math.ceil(flattenedJobs.length / itemsPerPage);
@@ -69,6 +75,30 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 10 }) => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  const getRelativeTimeString = (date: string) => {
+    const now = new Date();
+    const postDate = new Date(date);
+    const diffInSeconds = Math.floor(
+      (now.getTime() - postDate.getTime()) / 1000
+    );
+
+    if (diffInSeconds < 60) {
+      return `${diffInSeconds} seconds ago`;
+    } else if (diffInSeconds < 3600) {
+      const minutes = Math.floor(diffInSeconds / 60);
+      return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+    } else if (diffInSeconds < 86400) {
+      const hours = Math.floor(diffInSeconds / 3600);
+      return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+    } else if (diffInSeconds < 2592000) {
+      const days = Math.floor(diffInSeconds / 86400);
+      return `${days} day${days > 1 ? "s" : ""} ago`;
+    } else {
+      const months = Math.floor(diffInSeconds / 2592000);
+      return `${months} month${months > 1 ? "s" : ""} ago`;
+    }
+  };
 
   return (
     <>
@@ -110,7 +140,7 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 10 }) => {
           </div>
           <div className="text-right">
             <p className="text-gray-400 text-sm mb-3">
-              Posted on {new Date(job.updatedAt).toLocaleDateString()}
+              Posted {getRelativeTimeString(job.updatedAt)}
             </p>
             <a
               href={job.absolute_url}

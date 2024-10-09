@@ -99,7 +99,7 @@ const HomePage: React.FC = () => {
 
         <main className="text-center mb-16">
           <p className="text-green-400 mb-4 animate-pulse text-xl">
-            {totalJobs} active jobs
+            30,000+ active jobs
           </p>
           <h2 className="text-6xl font-bold mb-6 leading-tight">
             Find your Dream Job
