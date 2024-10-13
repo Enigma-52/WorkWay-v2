@@ -89,7 +89,13 @@ const HomePage: React.FC = () => {
           throw new Error("Invalid data structure received from API");
         }
 
-        console.log("Processed jobs:", allJobs); // Log the processed jobs
+        // Sort jobs by updatedAt in descending order (most recent first)
+        allJobs.sort(
+          (a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
+
+        console.log("Processed and sorted jobs:", allJobs); // Log the processed and sorted jobs
 
         setJobs(allJobs);
         setFilteredJobs(allJobs);
@@ -171,6 +177,32 @@ const HomePage: React.FC = () => {
   const toggleFaqItem = (index: number) => {
     setOpenFaqItem(openFaqItem === index ? null : index);
   };
+
+  const SkeletonLoader = () => (
+    <div className="bg-gray-800 p-6 rounded-xl shadow-lg mb-6 w-full animate-pulse">
+      <div className="flex justify-between items-start mb-4">
+        <div className="flex items-center">
+          <div className="w-12 h-12 bg-gray-700 rounded-full mr-4"></div>
+          <div className="text-left">
+            <div className="h-8 bg-gray-700 rounded w-64 mb-2"></div>
+            <div className="h-6 bg-gray-700 rounded w-48"></div>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="h-4 bg-gray-700 rounded w-32 mb-2"></div>
+          <div className="h-10 bg-gray-700 rounded-full w-24"></div>
+        </div>
+      </div>
+      <div className="flex flex-wrap mt-4">
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="h-8 bg-gray-700 rounded-full w-24 mr-2 mb-2"
+          ></div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="bg-gradient-to-br from-gray-900 to-purple-900 min-h-screen text-white text-lg">
@@ -279,7 +311,11 @@ const HomePage: React.FC = () => {
             <div className="lg:col-span-2 p-6">
               <h3 className="text-2xl font-semibold mb-4">Job Listings</h3>
               {isLoading ? (
-                <p>Loading jobs...</p>
+                <>
+                  {[...Array(4)].map((_, index) => (
+                    <SkeletonLoader key={index} />
+                  ))}
+                </>
               ) : error ? (
                 <p className="text-red-500">{error}</p>
               ) : (
