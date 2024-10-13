@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Search,
   ChevronDown,
@@ -6,6 +7,7 @@ import {
   Briefcase,
   User,
   ChevronRight,
+  LogOut,
 } from "lucide-react";
 import JobCard from "../components/JobCard";
 import RecentApplications from "../components/RecentApplications";
@@ -30,6 +32,11 @@ interface CompanyJobs {
 }
 
 const HomePage: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(
+    null
+  );
+  const navigate = useNavigate();
   const [openDropdown, setOpenDropdown] = useState("");
   const [jobs, setJobs] = useState<Job[]>([]);
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
@@ -57,6 +64,21 @@ const HomePage: React.FC = () => {
     "DevOps",
     "Data Science",
   ];
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    setUser(null);
+    navigate("/");
+  };
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -221,10 +243,26 @@ const HomePage: React.FC = () => {
               <Briefcase size={16} className="mr-2" />
               Applications
             </button>
-            <button className="bg-purple-600 hover:bg-purple-700 transition-colors px-4 py-2 rounded-full text-sm font-semibold flex items-center">
-              <User size={16} className="mr-2" />
-              Log in
-            </button>
+            {isLoggedIn ? (
+              <>
+                <span className="text-white">{user?.name}</span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-600 hover:bg-red-700 transition-colors px-4 py-2 rounded-full text-sm font-semibold flex items-center"
+                >
+                  <LogOut size={16} className="mr-2" />
+                  Logout
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-purple-600 hover:bg-purple-700 transition-colors px-4 py-2 rounded-full text-sm font-semibold flex items-center"
+              >
+                <User size={16} className="mr-2" />
+                Log in
+              </button>
+            )}
           </div>
         </header>
 

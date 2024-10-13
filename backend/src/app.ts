@@ -1,6 +1,8 @@
 import express, { Request } from 'express';
 import cors from 'cors'; 
 import jobRoutes from './routes/jobRoutes';
+import authRoutes from './routes/authRoutes';
+
 
 const app = express();
 
@@ -12,6 +14,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/jobs', jobRoutes);
+app.use('/api/auth', authRoutes);
 
 // Health check API
 app.get('/health', (req: Request, res) => {

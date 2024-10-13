@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, setDoc , getDocs ,collection , query, orderBy, startAfter, limit} from 'firebase/firestore';
-import { GoogleAuthProvider, signInWithPopup,getAuth , signOut} from 'firebase/auth';
+import { signOut, sendPasswordResetEmail,signInWithEmailAndPassword, createUserWithEmailAndPassword,GoogleAuthProvider, signInWithPopup,getAuth } from 'firebase/auth';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -20,4 +20,4 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 const auth = getAuth(firebaseApp);
 
-export default { firebaseConfig,firebaseApp, db, doc , setDoc ,getFirestore, getDocs, collection,auth, GoogleAuthProvider, signInWithPopup, query, orderBy, startAfter, limit};
+export default { signOut,sendPasswordResetEmail,signInWithEmailAndPassword, createUserWithEmailAndPassword, firebaseConfig,firebaseApp, db, doc , setDoc ,getFirestore, getDocs, collection,auth, GoogleAuthProvider, signInWithPopup, query, orderBy, startAfter, limit};
