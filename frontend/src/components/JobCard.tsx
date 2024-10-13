@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import LoginModal from "./LoginModal";
 import {
   Briefcase,
   MapPin,
@@ -8,6 +10,8 @@ import {
   Code,
   GraduationCap,
   Building,
+  Check,
+  X,
 } from "lucide-react";
 
 interface Job {
@@ -31,6 +35,32 @@ interface JobCardProps {
 
 const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [applicationStatus, setApplicationStatus] = useState<{
+    [key: string]: "none" | "applied" | "skipped";
+  }>({});
+  const [applyingJobs, setApplyingJobs] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+
+    const savedStatuses = localStorage.getItem("applicationStatuses");
+    if (savedStatuses) {
+      setApplicationStatus(JSON.parse(savedStatuses));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "applicationStatuses",
+      JSON.stringify(applicationStatus)
+    );
+  }, [applicationStatus]);
 
   const totalPages = Math.ceil(jobs.length / itemsPerPage);
 
@@ -43,6 +73,42 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
     currentPage * itemsPerPage
   );
 
+  const handleApply = (job: Job) => {
+    window.open(job.absolute_url, "_blank");
+    setApplyingJobs((prev) => ({ ...prev, [job.id]: true }));
+  };
+
+  const handleApplied = (jobId: string) => {
+    if (!isLoggedIn) {
+      setSelectedJobId(jobId);
+      setShowLoginModal(true);
+    } else {
+      setApplicationStatus((prev) => ({ ...prev, [jobId]: "applied" }));
+      setApplyingJobs((prev) => ({ ...prev, [jobId]: false }));
+      sendApplicationToServer(jobId);
+      alert("Added to applications!");
+    }
+  };
+
+  const handleSkip = (jobId: string) => {
+    setApplicationStatus((prev) => ({ ...prev, [jobId]: "skipped" }));
+    setApplyingJobs((prev) => ({ ...prev, [jobId]: false }));
+  };
+
+  const handleResetApplication = (jobId: string) => {
+    setApplicationStatus((prev) => ({ ...prev, [jobId]: "none" }));
+    setApplyingJobs((prev) => ({ ...prev, [jobId]: false }));
+  };
+
+  const sendApplicationToServer = async (jobId: string) => {
+    try {
+      await axios.post("/api/applications", { jobId });
+      // Handle success (e.g., show a success message)
+    } catch (error) {
+      console.error("Failed to save application:", error);
+      // Handle error (e.g., show an error message)
+    }
+  };
   const getRelativeTimeString = (date: string) => {
     const now = new Date();
     const postDate = new Date(date);
@@ -181,14 +247,63 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
               <div className="text-gray-400 text-sm mb-2">
                 Posted {getRelativeTimeString(job.updatedAt)}
               </div>
-              <a
-                href={job.absolute_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition-colors"
-              >
-                Apply Now
-              </a>
+              {applicationStatus[job.id] === "applied" ? (
+                <div>
+                  <button
+                    className="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold transition-colors mr-2"
+                    disabled
+                  >
+                    <Check size={16} className="inline mr-2" />
+                    Applied
+                  </button>
+                  <button
+                    onClick={() => handleResetApplication(job.id)}
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition-colors"
+                  >
+                    Reset
+                  </button>
+                </div>
+              ) : applicationStatus[job.id] === "skipped" ? (
+                <div>
+                  <button
+                    className="bg-red-600 text-white px-4 py-2 rounded-full text-sm font-semibold transition-colors mr-2"
+                    disabled
+                  >
+                    <X size={16} className="inline mr-2" />
+                    Skipped
+                  </button>
+                  <button
+                    onClick={() => handleResetApplication(job.id)}
+                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition-colors"
+                  >
+                    Reset
+                  </button>
+                </div>
+              ) : applyingJobs[job.id] ? (
+                <div>
+                  <button
+                    onClick={() => handleApplied(job.id)}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition-colors mr-2"
+                  >
+                    Applied?
+                  </button>
+                  <button
+                    onClick={() => handleSkip(job.id)}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition-colors"
+                  >
+                    Skipped?
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <button
+                    onClick={() => handleApply(job)}
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full text-sm font-semibold transition-colors mr-2"
+                  >
+                    Apply Now
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -236,6 +351,12 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
             <ChevronRight size={24} />
           </button>
         </div>
+      )}
+      {showLoginModal && (
+        <LoginModal
+          onClose={() => setShowLoginModal(false)}
+          onLogin={() => console.log("User logged in successfully")}
+        />
       )}
     </>
   );
