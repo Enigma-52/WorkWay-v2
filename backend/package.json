@@ -20,19 +20,20 @@
     "firebase": "^10.14.1",
     "firebase-admin": "^12.6.0",
     "jsonwebtoken": "^9.0.2",
-    "node-fetch": "^3.3.2",
+    "node-fetch": "^2.7.0",
     "nodemailer": "^6.9.15",
     "prisma": "^5.20.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/firebase": "^3.2.1",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.7.5",
     "@types/node-fetch": "^2.6.11",
     "@types/nodemailer": "^6.4.16",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.3"
   }
 }
