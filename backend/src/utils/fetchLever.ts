@@ -143,8 +143,15 @@ const companyNameList = [
   "Plum",
   "Kong",
   "Palantir",
-  "Nielsen"
+  "Nielsen",
+"Apex", "Bloom", "Bungalow",
+    "Doxel", "Duffel", "Enable","Fairmatic", "Fanatics", "Finch","Fullscript", "Genesis",
+       "Getaround","Glowforge", "Grove", "H1", "Honeycomb", "Horizon", "Hyperscience", "Icertis",
+             "Instrumental", "Juro", 
+               "Kapwing","Kraken", "Kubecost","Lattice", "Lever", "Magic",
+                    "MainStreet", 
 ];
+
 
 // Define a Job interface for clarity
 interface Job {

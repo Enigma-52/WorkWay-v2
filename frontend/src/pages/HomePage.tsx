@@ -88,7 +88,7 @@ const HomePage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`{API_BASE_URL}/jobs/all`);
+        const response = await fetch("http://localhost:3000/api/jobs/all");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
