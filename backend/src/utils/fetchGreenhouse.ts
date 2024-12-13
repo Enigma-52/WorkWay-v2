@@ -11,6 +11,13 @@ import fetch from 'node-fetch';
 //TODO : EXPIRY CHECKER
 
 const companies: string[] = [
+"Affirm", "Airtable", "Calm", "Faire", "Forward","Mercury", "Notion", "Retool","Robinhood", "Waymo", 
+   "Anthropic","Betterment", "Blend", "Branch", "Carbon", "Clever", 
+   "Collibra", "Descript", "Discord", "DriveWealth",
+    "Everlane", "Faire", "Forethought", "Galileo", "Glossier",
+     "Grammarly", "Guideline", 
+      "Axon", "BetterCloud", "Braze", "Checkr", "CoreWeave", "Doma", "Formlabs", 
+       "Fourkites", "Glean", "GoCardless",
     "Apptronik",
     "GoMotive",
     "ExnessInternship",
@@ -179,6 +186,8 @@ const companies: string[] = [
     "Brevium","OpenSesame","AscendAnalytics" ,"MongoDB", "PagerDuty", "Elastic", "Anaplan", "Databricks", "GitLab", "HashiCorp", "Okta", "Zscaler", "Datadog", "Dropbox", "Tanium", "Zuora", "ZoomInfo", "NICE", "SolarWinds", "InterSystems", "Appian", "SolarWinds", "Appian", "SolarWinds", "SolarWinds", "SolarWinds", "Appian", "SolarWinds", "SolarWinds", "SolarWinds", "SolarWinds", "Dropbox", "Tanium", "Zuora", "ZoomInfo", "NICE", "SolarWinds", "InterSystems", "Udemy", "Pinterest", "Twitch", "Squarespace", "Asana", "Stripe", "Dropbox", "Instacart", "Okta", "Thumbtack", "HashiCorp", "PagerDuty", "Gusto", "Twilio", "SurveyMonkey", "Glassdoor", "Flexport", "Figma", "Gusto", "Guru", "Handshake", "HackerRank", "HashiCorp", "Hootsuite", "HubSpot", "Indeed", "Instacart", "Integrate", "Jampp", "Jumia", "Justworks", "Lattice", "Life360", "LinkedIn", "Lyft", "Marqeta", "Mindbody", "Mixpanel", "MongoDB", "Mozilla", "MyHeritage", "N26", "Narvar", "Netskope", "Netlify", "Nextdoor", "Oath", "Okta", "OpenTable", "Opendoor", "OpenTable", "PagerDuty", "PathAI", "PebblePost", "Peloton", "Pendo", "Pinterest", "Qualtrics", "Quip", "Reddit", "Reddit", "Relativity", "Rev", "Roblox", "Roku", "Rubrik", "Samsara", "SeatGeek", "Sisense", "Skydio", "SkyScanner", "Smartsheet", "SoFi", "Solera", "SpaceX", "Squarespace", "Squarespace", "Strava", "Stripe", "SurveyMonkey", "Symphony", "Synack", "Tanium", "Thumbtack", "Toast", "TripAdvisor", "Twitch", "Twilio", "Udacity", "Udemy", "Upstart", "Upwork", "Vimeo", "Wayfair", "Weave", "Webflow", "Wework", "WillowTree", "Wizeline", "Yext", "ZoomInfo", "Zscaler", "Zuora", "Zynga"
 ];
 
+
+
 const baseUrl = "https://boards-api.greenhouse.io/v1/boards/";
 
 function generateJobBoardURLs(companies: string[]): string[] {
@@ -279,6 +288,7 @@ async function fetchAllData(urls: string[]): Promise<any[]> {
     const data = await fetchData(url);
     if (data && data.jobs) {
       const processedJobs = processJobs(company, data.jobs);
+      console.log(`Fetched ${processedJobs.length} jobs for ${company}`);
       allJobs.push(...processedJobs);
     }
   }
@@ -308,7 +318,6 @@ const greenhouse = async (): Promise<void> => {
 
   console.log("Job processing completed.");
   console.log(`Total jobs fetched: ${allJobs.length}`);
-  console.log(JSON.stringify(allJobs, null, 2));
   return;
 };
 

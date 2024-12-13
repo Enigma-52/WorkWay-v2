@@ -80,15 +80,14 @@ const HomePage: React.FC = () => {
     navigate("/");
   };
 
-  const API_BASE_URL =
-    process.env.REACT_APP_API_BASE_URL || "http://localhost:3000/api";
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     const fetchJobs = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`{API_BASE_URL}/jobs/all`);
+        const response = await fetch(`${API_BASE_URL}/jobs/all`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
