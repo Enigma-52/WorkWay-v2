@@ -393,6 +393,8 @@ const HomePage: React.FC = () => {
           </div>
         </main>
 
+        {/*World Map*/}
+
         {/* FAQ Section */}
         <section aria-labelledby="faq-heading" className="mt-16">
           <h2 id="faq-heading" className="text-2xl font-semibold mb-6">
