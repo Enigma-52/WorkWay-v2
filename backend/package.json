@@ -7,7 +7,7 @@
   "scripts": {
     "start": "ts-node src/app.ts",
     "build": "tsc",
-    "dev": "ts-node-dev --respawn --transpile-only --max-old-space-size=8192 src/app.ts"
+    "dev": "export NODE_OPTIONS=–max-old-space-size=8192 && ts-node-dev --respawn --transpile-only src/app.ts"
   },
   "keywords": [],
   "author": "",
