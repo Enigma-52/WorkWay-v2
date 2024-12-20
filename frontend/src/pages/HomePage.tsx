@@ -94,7 +94,12 @@ const HomePage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${API_BASE_URL}/jobs/all`);
+        const token = process.env.REACT_APP_API_AUTH;
+        const response = await fetch(`${API_BASE_URL}/jobs/all`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
