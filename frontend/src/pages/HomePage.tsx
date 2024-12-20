@@ -95,7 +95,7 @@ const HomePage: React.FC = () => {
       setError(null);
       try {
         const token = process.env.REACT_APP_API_AUTH;
-        const response = await fetch(`${API_BASE_URL}/api/jobs/all`, {
+        const response = await fetch(`${API_BASE_URL}/jobs/all`, {
           method: "GET",
           credentials: "include",
           headers: {
