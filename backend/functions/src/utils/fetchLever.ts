@@ -163,6 +163,12 @@ interface Job {
     location: string;
   };
   createdAt: number;
+  additional : string,
+  description : symbol,
+  lists : object,
+  salaryRange: object,
+  workplaceType: string,
+
 }
 
 // Utility function to remove undefined values from an object
@@ -241,6 +247,11 @@ const formatJobData = (job: Job, company: string) => removeUndefined({
   experienceLevel: getExperienceLevel(job.text),
   employmentType: getEmploymentType(job.text),
   domain: getDomain(job.text),
+  additional : job.additional,
+  description : job.description,
+  lists : job.lists,
+  salaryRange: job.salaryRange,
+  workplaceType: job.workplaceType,
 });
 function deduplicateJobs(jobs: any[]){
   // Create a Map using a composite key of relevant fields
@@ -302,5 +313,7 @@ const lever = async (): Promise<void> => {
     console.error('Error:', error);
   }
 }
+
+lever();
 
 export default lever;

@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "serve": "NODE_OPTIONS=\"--loader ts-node/esm\" firebase emulators:start --only functions",
-    "dev": "NODE_OPTIONS=\"--loader ts-node/esm\" firebase serve --only functions",
+    "dev": "node --loader ts-node/esm src/app.ts",
     "start": "npm run serve",
     "deploy": "firebase deploy --only functions",
     "logs": "firebase functions:log"
@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",
+    "axios": "^1.7.9",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
