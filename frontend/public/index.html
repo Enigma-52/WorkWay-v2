@@ -6,48 +6,89 @@
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
+    
+    <!-- Primary Meta Tags -->
+    <title>WorkWay - Find Your Dream Tech Job | Software Developer Jobs</title>
+    <meta name="title" content="WorkWay - Find Your Dream Tech Job | Software Developer Jobs" />
+    <meta name="description" content="Discover 30,000+ active tech jobs. Find remote and in-office opportunities in software development, data science, AI, and more. Apply to top tech companies today." />
+    <meta name="keywords" content="tech jobs, software developer jobs, remote work, programming jobs, engineering careers, IT jobs" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://workway.com/" />
+    <meta property="og:title" content="WorkWay - Find Your Dream Tech Job | Software Developer Jobs" />
+    <meta property="og:description" content="Discover 30,000+ active tech jobs. Find remote and in-office opportunities in software development, data science, AI, and more. Apply to top tech companies today." />
+    <meta property="og:image" content="%PUBLIC_URL%/og-image.jpg" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://workway.com/" />
+    <meta property="twitter:title" content="WorkWay - Find Your Dream Tech Job | Software Developer Jobs" />
+    <meta property="twitter:description" content="Discover 30,000+ active tech jobs. Find remote and in-office opportunities in software development, data science, AI, and more." />
+    <meta property="twitter:image" content="%PUBLIC_URL%/twitter-image.jpg" />
+
+    <!-- Favicon and App Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+    
+    <!-- Alternate Language Versions -->
+    <link rel="alternate" href="https://workway.com" hreflang="x-default" />
+    <link rel="alternate" href="https://workway.com" hreflang="en" />
+    
+    <!-- Preconnect to Important Third-party Domains -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "WorkWay",
+        "url": "https://workway.com",
+        "description": "Find tech jobs and career opportunities in software development, data science, and more.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://workway.com/search?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>WorkWay</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "WorkWay",
+        "url": "https://workway.com",
+        "logo": "https://workway.com/logo.png",
+        "sameAs": [
+          "https://twitter.com/enigmaticity",
+          "https://www.linkedin.com/in/rohitsingh52/",
+          "https://github.com/Enigma-52"
+        ]
+      }
+    </script>
   </head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FK0FPHRLM9"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-FK0FPHRLM9');
-</script>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FK0FPHRLM9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FK0FPHRLM9');
+  </script>
+
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>
+      <h1>Welcome to WorkWay - Your Tech Job Search Platform</h1>
+      <p>You need to enable JavaScript to use WorkWay. We provide thousands of tech job opportunities across various domains including software development, data science, and AI.</p>
+    </noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
