@@ -281,6 +281,33 @@ function processJobs(company: string, jobs: any[]): any[] {
   }));
 }
 
+
+function deduplicateJobs(jobs: any[]){
+  // Create a Map using a composite key of relevant fields
+  const uniqueJobsMap = new Map();
+  
+  jobs.forEach(job => {
+      // Create a composite key using fields that should make a job unique
+      const key = `${job.title}_${job.company}_${job.location}`.toLowerCase();
+      
+      // If this key already exists, only keep the more recently updated job
+      if (uniqueJobsMap.has(key)) {
+          const existingJob = uniqueJobsMap.get(key);
+          const existingDate = new Date(existingJob.updatedAt);
+          const newDate = new Date(job.updatedAt);
+          
+          if (newDate > existingDate) {
+              uniqueJobsMap.set(key, job);
+          }
+      } else {
+          uniqueJobsMap.set(key, job);
+      }
+  });
+  
+  // Convert Map back to array
+  return Array.from(uniqueJobsMap.values());
+}
+
 async function fetchAllData(urls: string[]): Promise<any[]> {
   const allJobs: any[] = [];
   for (const url of urls) {
@@ -292,7 +319,9 @@ async function fetchAllData(urls: string[]): Promise<any[]> {
       allJobs.push(...processedJobs);
     }
   }
-  return allJobs;
+  const uniqueJobs = deduplicateJobs(allJobs);
+    console.log(`Reduced from ${allJobs.length} to ${uniqueJobs.length} unique jobs`);
+    return uniqueJobs;
 }
 
 const greenhouse = async (): Promise<void> => {
@@ -312,7 +341,7 @@ const greenhouse = async (): Promise<void> => {
       const docRef = doc(db, 'jobs', company);
       const jobDetails = { data };
 
-      await setDoc(docRef, jobDetails);
+      await setDoc(docRef, jobDetails, { merge: true });
     }
   }
 

@@ -55,14 +55,15 @@ const HomePage: React.FC = () => {
     jobTitle: "",
     company: "",
     location: "",
-    domain: "",
-    experienceLevel: "",
-    employmentType: "",
+    domain: null as string | null,
+    experienceLevel: null as string | null,
+    employmentType: null as string | null,
   });
 
-  const experienceLevels = ["Junior", "Mid-level", "Senior", "Lead"];
-  const employmentTypes = ["Intern", "Full-time", "Contract"];
+  const experienceLevels = ["All", "Junior", "Mid-level", "Senior", "Lead"];
+  const employmentTypes = ["All", "Intern", "Full-time", "Contract"];
   const domains = [
+    "All",
     "Android",
     "Backend",
     "Frontend",
@@ -148,17 +149,40 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const filtered = jobs.filter((job) => {
+      const titleMatch = job.title
+        .toLowerCase()
+        .includes(filters.jobTitle.toLowerCase());
+      const companyMatch = job.company
+        .toLowerCase()
+        .includes(filters.company.toLowerCase());
+      const locationMatch = job.location
+        .toLowerCase()
+        .includes(filters.location.toLowerCase());
+
+      // Updated dropdown filter logic with null checks and "All" option handling
+      const domainMatch =
+        !filters.domain || filters.domain === "All"
+          ? true
+          : job.domain === filters.domain;
+      const experienceLevelMatch =
+        !filters.experienceLevel || filters.experienceLevel === "All"
+          ? true
+          : job.experienceLevel === filters.experienceLevel;
+      const employmentTypeMatch =
+        !filters.employmentType || filters.employmentType === "All"
+          ? true
+          : job.employmentType === filters.employmentType;
+
       return (
-        job.title.toLowerCase().includes(filters.jobTitle.toLowerCase()) &&
-        job.company.toLowerCase().includes(filters.company.toLowerCase()) &&
-        job.location.toLowerCase().includes(filters.location.toLowerCase()) &&
-        (filters.domain === "" || job.domain === filters.domain) &&
-        (filters.experienceLevel === "" ||
-          job.experienceLevel === filters.experienceLevel) &&
-        (filters.employmentType === "" ||
-          job.employmentType === filters.employmentType)
+        titleMatch &&
+        companyMatch &&
+        locationMatch &&
+        domainMatch &&
+        experienceLevelMatch &&
+        employmentTypeMatch
       );
     });
+
     setFilteredJobs(filtered);
     setTotalJobs(filtered.length);
   }, [filters, jobs]);
@@ -170,7 +194,7 @@ const HomePage: React.FC = () => {
   const handleFilterChange = (filterType: string, value: string) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
-      [filterType]: value,
+      [filterType]: value === "All" ? null : value,
     }));
     if (["domain", "experienceLevel", "employmentType"].includes(filterType)) {
       setOpenDropdown("");
@@ -320,7 +344,6 @@ const HomePage: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap justify-center gap-4 mb-8">
-            {/* Dropdowns */}
             {[
               { name: "domain", options: domains, label: "Domain" },
               {
@@ -340,7 +363,7 @@ const HomePage: React.FC = () => {
                   onClick={() => toggleDropdown(dropdown.name)}
                 >
                   {filters[dropdown.name as keyof typeof filters] ||
-                    dropdown.label}{" "}
+                    dropdown.label}
                   <ChevronDown className="ml-2" size={16} />
                 </button>
                 {openDropdown === dropdown.name && (
@@ -348,7 +371,12 @@ const HomePage: React.FC = () => {
                     {dropdown.options.map((option) => (
                       <div
                         key={option}
-                        className="p-2 text-lg flex items-center cursor-pointer hover:bg-gray-700"
+                        className={`p-2 text-lg flex items-center cursor-pointer hover:bg-gray-700 ${
+                          filters[dropdown.name as keyof typeof filters] ===
+                          option
+                            ? "bg-purple-600"
+                            : ""
+                        }`}
                         onClick={() =>
                           handleFilterChange(dropdown.name, option)
                         }
