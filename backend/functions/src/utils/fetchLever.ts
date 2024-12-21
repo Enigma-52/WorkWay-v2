@@ -176,20 +176,18 @@ const removeUndefined = (obj: any) => {
 const getExperienceLevel = (title: string): string => {
   const lowercaseTitle = title.toLowerCase();
   
-  if (lowercaseTitle.includes("founder") || lowercaseTitle.includes("co-founder") || lowercaseTitle.includes("founding")) {
+  if (lowercaseTitle.includes(" Founder ") || lowercaseTitle.includes(" Co-Founder ") || lowercaseTitle.includes(" Founding ")) {
     return "Founding Team";
-  } else if (lowercaseTitle.includes("lead") || lowercaseTitle.includes("architect")) {
+  } else if (lowercaseTitle.includes(" Lead ") || lowercaseTitle.includes(" Architect ")) {
     return "Lead";
-  } else if (lowercaseTitle.includes("senior") || lowercaseTitle.includes("sr.")) {
+  } else if (lowercaseTitle.includes(" Senior ") || lowercaseTitle.includes(" Sr. ")) {
     return "Senior";
-  } else if (lowercaseTitle.includes("manager") || lowercaseTitle.includes("director")) {
+  } else if (lowercaseTitle.includes(" Manager ") || lowercaseTitle.includes(" Director ")) {
     return "Manager";
-  } else if (lowercaseTitle.includes("staff") || lowercaseTitle.includes("principal")) {
+  } else if (lowercaseTitle.includes(" Staff ") || lowercaseTitle.includes(" Principal ")) {
     return "Staff";
-  } else if (lowercaseTitle.includes("junior") || lowercaseTitle.includes("jr.") || lowercaseTitle.includes("associate") || lowercaseTitle.includes("assisstant")) {
+  } else if (lowercaseTitle.includes(" Junior ") || lowercaseTitle.includes(" Jr. ") || lowercaseTitle.includes(" Associate ") || lowercaseTitle.includes(" Assisstant ")) {
     return "Junior";
-  } else if (lowercaseTitle.includes("intern") || lowercaseTitle.includes("trainee")) {
-    return "Intern";
   } else {
     return "Mid-level";
   }
@@ -198,9 +196,9 @@ const getExperienceLevel = (title: string): string => {
 const getEmploymentType = (title: string): string => {
   const lowercaseTitle = title.toLowerCase();
   
-  if (lowercaseTitle.includes("intern") || lowercaseTitle.includes("trainee")) {
+  if (lowercaseTitle.includes(" Internship ") || lowercaseTitle.includes(" Intern ") || lowercaseTitle.includes(" Trainee ")) {
     return "Intern";
-  } else if (lowercaseTitle.includes("contract") || lowercaseTitle.includes("temporary")) {
+  } else if (lowercaseTitle.includes(" Contract ") || lowercaseTitle.includes(" Temporary ")) {
     return "Contract";
   } else {
     return "Full-time";
@@ -211,19 +209,19 @@ const getEmploymentType = (title: string): string => {
 const getDomain = (title: string): string => {
   const lowercaseTitle = title.toLowerCase();
   
-  if (lowercaseTitle.includes("android")) {
+  if (lowercaseTitle.includes(" Android ")) {
     return "Android";
-  } else if (lowercaseTitle.includes("backend") || lowercaseTitle.includes("back-end") || lowercaseTitle.includes("back end")) {
+  } else if (lowercaseTitle.includes(" Backend ") || lowercaseTitle.includes(" Back-End ") ) {
     return "Backend";
-  } else if (lowercaseTitle.includes("frontend") || lowercaseTitle.includes("front-end") || lowercaseTitle.includes("front end")) {
+  } else if (lowercaseTitle.includes(" Frontend ") || lowercaseTitle.includes(" Front-End ") ){
     return "Frontend";
-  } else if (lowercaseTitle.includes("ios")) {
+  } else if (lowercaseTitle.includes(" IOS ")) {
     return "iOS";
-  } else if (lowercaseTitle.includes("full stack") || lowercaseTitle.includes("fullstack") || lowercaseTitle.includes("full-stack")) {
+  } else if (lowercaseTitle.includes(" Full Stack ") || lowercaseTitle.includes(" Fullstack ") || lowercaseTitle.includes(" Full-Stack ")) {
     return "Full-stack";
-  } else if (lowercaseTitle.includes("devops")) {
+  } else if (lowercaseTitle.includes(" Devops ")) {
     return "DevOps";
-  } else if (lowercaseTitle.includes("data scientist") || lowercaseTitle.includes("data science") || lowercaseTitle.includes("machine learning")) {
+  } else if (lowercaseTitle.includes(" Data Scientist ") || lowercaseTitle.includes(" Data Science") || lowercaseTitle.includes(" Machine Learning ")) {
     return "Data Science";
   } else {
     return "Other";
