@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { fetchAllJobs } from '../services/jobService';
+import { fetchAllJobs } from '../services/jobService.js';
 
 export const getAllJobs = async (req: Request, res: Response) => {
     try {
@@ -15,7 +15,7 @@ export const getAllJobs = async (req: Request, res: Response) => {
             });
         }
 
-        const { jobs, meta } = await fetchAllJobs(page, limit);
+        const { jobs, meta } = await fetchAllJobs();
         
         res.json({ 
             jobs, 
