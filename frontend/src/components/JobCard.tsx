@@ -11,6 +11,8 @@ import {
   ExternalLink,
   ChevronLeft,
   ChevronRight,
+  Building2,
+  DollarSign,
 } from "lucide-react";
 import LoginModal from "./LoginModal";
 
@@ -26,6 +28,13 @@ interface Job {
   experienceLevel?: string;
   employmentType?: string;
   domain?: string;
+  salaryRange?: {
+    min: number;
+    max: number;
+    currency: string;
+    interval: string;
+  };
+  workplaceType?: string;
 }
 
 interface JobCardProps {
@@ -106,6 +115,22 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
     }
   };
 
+  const formatSalary = (amount: number, currency: string) => {
+    if (currency === "INR") {
+      const lakhs = (amount / 100000).toFixed(1);
+      return `₹${lakhs} L`;
+    }
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const isLeverJob = (job: Job) => {
+    return job.source.toLowerCase() === "lever";
+  };
+
   const handleSkip = (jobId: string) => {
     setApplicationStatus((prev) => ({ ...prev, [jobId]: "skipped" }));
     setApplyingJobs((prev) => ({ ...prev, [jobId]: false }));
@@ -171,7 +196,7 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
                       .split(" ")[0]
                       .toLowerCase()}.com`}
                     alt={job.company}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src =
                         "https://via.placeholder.com/48?text=Logo";
@@ -214,6 +239,29 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
                         {job.domain}
                       </span>
                     )}
+                    {isLeverJob(job) && job.workplaceType && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm bg-indigo-500/20 text-indigo-300">
+                        <Building2 size={16} />
+                        {job.workplaceType}
+                      </span>
+                    )}
+                    {isLeverJob(job) && job.salaryRange && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm bg-green-500/20 text-green-300">
+                        <DollarSign size={16} />
+                        {formatSalary(
+                          job.salaryRange.min,
+                          job.salaryRange.currency
+                        )}{" "}
+                        -{" "}
+                        {formatSalary(
+                          job.salaryRange.max,
+                          job.salaryRange.currency
+                        )}
+                        {job.salaryRange.interval === "per-year-salary"
+                          ? "/year"
+                          : ""}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -223,58 +271,19 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
                   Posted {getRelativeTime(job.updatedAt)}
                 </span>
 
-                {applicationStatus[job.id] === "applied" ? (
-                  <div className="flex gap-2">
-                    <button className="inline-flex items-center gap-2 px-4 py-2 bg-green-600/20 text-green-400 rounded-md cursor-not-allowed">
-                      <Check size={16} />
-                      Applied
-                    </button>
-                    <button
-                      onClick={() => handleResetApplication(job.id)}
-                      className="p-2 text-gray-400 hover:text-white bg-gray-700/50 rounded-md transition-colors"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ) : applicationStatus[job.id] === "skipped" ? (
-                  <div className="flex gap-2">
-                    <button className="inline-flex items-center gap-2 px-4 py-2 bg-red-600/20 text-red-400 rounded-md cursor-not-allowed">
-                      <X size={16} />
-                      Skipped
-                    </button>
-                    <button
-                      onClick={() => handleResetApplication(job.id)}
-                      className="p-2 text-gray-400 hover:text-white bg-gray-700/50 rounded-md transition-colors"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ) : applyingJobs[job.id] ? (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleApplied(job.id)}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors"
-                    >
-                      <Check size={16} />
-                      Applied?
-                    </button>
-                    <button
-                      onClick={() => handleSkip(job.id)}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors"
-                    >
-                      <X size={16} />
-                      Skip
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => handleApply(job)}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors whitespace-nowrap"
-                  >
-                    <ExternalLink size={16} />
-                    Apply Now
-                  </button>
-                )}
+                <button
+                  onClick={() => {
+                    const jobString = JSON.stringify(job);
+                    window.open(
+                      `/job-details?job=${encodeURIComponent(jobString)}`,
+                      "_blank"
+                    );
+                  }}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors whitespace-nowrap"
+                >
+                  <ExternalLink size={16} />
+                  View Details
+                </button>
               </div>
             </div>
           </div>
