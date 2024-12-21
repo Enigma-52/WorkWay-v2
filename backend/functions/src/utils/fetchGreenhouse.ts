@@ -22,6 +22,7 @@ interface ProcessedJob {
   employmentType: string;
   domain: string;
   description: string;
+  applicants: any;
 }
 
 //TODO : EXPIRY CHECKER
@@ -322,7 +323,8 @@ async function processJobs(company: string, jobs: any[]): Promise<any[]> {
           experienceLevel: getExperienceLevel(job.title),
           employmentType: getEmploymentType(job.title),
           domain: getDomain(job.title),
-          description: description || ''
+          description: description || '',
+          applicants: job.applicants || 0
       });
   }
   return processedJobs;

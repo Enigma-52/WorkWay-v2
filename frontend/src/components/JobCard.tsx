@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Building2,
   DollarSign,
+  Eye,
 } from "lucide-react";
 import LoginModal from "./LoginModal";
 
@@ -50,9 +51,17 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
   const [applyingJobs, setApplyingJobs] = useState<{ [key: string]: boolean }>(
     {}
   );
+  const [viewedJobs, setViewedJobs] = useState<{ [key: string]: number }>({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const savedViewedJobs = localStorage.getItem("viewedJobs");
+    if (savedViewedJobs) {
+      setViewedJobs(JSON.parse(savedViewedJobs));
+    }
+  }, []);
 
   // Reset to first page when jobs array changes (e.g., when filters change)
   useEffect(() => {
@@ -125,6 +134,44 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
       currency: currency,
       maximumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const handleViewDetails = (job: Job) => {
+    // Update viewed jobs in state and localStorage
+    const timestamp = Date.now();
+    const updatedViewedJobs = {
+      ...viewedJobs,
+      [job.id]: timestamp,
+    };
+    setViewedJobs(updatedViewedJobs);
+    localStorage.setItem("viewedJobs", JSON.stringify(updatedViewedJobs));
+
+    // Open job details in new tab
+    const jobString = JSON.stringify(job);
+    window.open(`/job-details?job=${encodeURIComponent(jobString)}`, "_blank");
+  };
+
+  const getViewedStatus = (jobId: string) => {
+    if (!viewedJobs[jobId]) {
+      return null;
+    }
+
+    const viewedTime = new Date(viewedJobs[jobId]);
+    const now = new Date();
+    const diffInHours = Math.floor(
+      (now.getTime() - viewedTime.getTime()) / (1000 * 60 * 60)
+    );
+
+    if (diffInHours < 24) {
+      return `Viewed ${
+        diffInHours === 0
+          ? "recently"
+          : `${diffInHours} hour${diffInHours === 1 ? "" : "s"} ago`
+      }`;
+    } else {
+      const diffInDays = Math.floor(diffInHours / 24);
+      return `Viewed ${diffInDays} day${diffInDays === 1 ? "" : "s"} ago`;
+    }
   };
 
   const isLeverJob = (job: Job) => {
@@ -273,6 +320,7 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
 
                 <button
                   onClick={() => {
+                    handleViewDetails(job);
                     const jobString = JSON.stringify(job);
                     window.open(
                       `/job-details?job=${encodeURIComponent(jobString)}`,
@@ -284,6 +332,12 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
                   <ExternalLink size={16} />
                   View Details
                 </button>
+                {getViewedStatus(job.id) && (
+                  <div className="absolute -top-3 right-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-gray-700/90 text-gray-300">
+                    <Eye size={12} className="text-purple-400" />
+                    {getViewedStatus(job.id)}
+                  </div>
+                )}
               </div>
             </div>
           </div>
