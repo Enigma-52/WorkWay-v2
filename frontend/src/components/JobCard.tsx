@@ -128,7 +128,7 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
       setApplyingJobs({}); // Reset applying state when changing pages
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      //window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
