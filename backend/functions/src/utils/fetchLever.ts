@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import pkg from '../config/firebaseConfig';
+import pkg from '../config/firebaseConfig.js';
 const {
     db,
     doc,
@@ -278,7 +278,5 @@ const lever = async (): Promise<void> => {
     console.error('Error:', error);
   }
 }
-
-lever();
 
 export default lever;

@@ -1,4 +1,4 @@
-import pkg from '../config/firebaseConfig';
+import pkg from '../config/firebaseConfig.js';
 const {
     db,
     doc,
@@ -320,7 +320,5 @@ const greenhouse = async (): Promise<void> => {
   console.log(`Total jobs fetched: ${allJobs.length}`);
   return;
 };
-
-greenhouse();
 
 export default greenhouse;

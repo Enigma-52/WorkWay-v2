@@ -1,7 +1,7 @@
-import greenhouse from "./fetchGreenhouse";
-import lever from "./fetchLever";
+import greenhouse from "./fetchGreenhouse.js";
+import lever from "./fetchLever.js";
 import getTop5LatestJobs from "./fetchLatestJobs";
-import pkg from '../config/firebaseConfig';
+import pkg from '../config/firebaseConfig.js';
 const {
     db,
     doc,
@@ -13,7 +13,7 @@ const {
 async function fetch(){
     await greenhouse();
     await lever();
-    await getTop5LatestJobs();
+    //await getTop5LatestJobs();
 
     //set total jobs
     const docRef = collection(db, 'jobs');

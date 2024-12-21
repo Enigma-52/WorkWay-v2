@@ -1,4 +1,4 @@
-import pkg from '../config/firebaseConfig';
+import pkg from '../config/firebaseConfig.js';
 const {
     db,
     doc,

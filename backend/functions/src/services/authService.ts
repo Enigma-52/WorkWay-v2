@@ -1,4 +1,4 @@
-import firebaseConfig from '../config/firebaseConfig';
+import firebaseConfig from '../config/firebaseConfig.js';
 import { Timestamp, QuerySnapshot, DocumentData, query, where, limit } from 'firebase/firestore';
 
 const {

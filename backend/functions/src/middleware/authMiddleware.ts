@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../utils/jwt';
-import firebaseConfig from '../config/firebaseConfig';
+import { verifyToken } from '../utils/jwt.js';
+import firebaseConfig from '../config/firebaseConfig.js';
 
 const { auth } = firebaseConfig;
 
