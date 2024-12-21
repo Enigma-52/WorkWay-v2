@@ -168,6 +168,7 @@ interface Job {
   lists : object,
   salaryRange: object,
   workplaceType: string,
+  applicants: any;
 
 }
 
@@ -252,6 +253,7 @@ const formatJobData = (job: Job, company: string) => removeUndefined({
   lists : job.lists,
   salaryRange: job.salaryRange,
   workplaceType: job.workplaceType,
+  applicants: job.applicants || 0
 });
 function deduplicateJobs(jobs: any[]){
   // Create a Map using a composite key of relevant fields
