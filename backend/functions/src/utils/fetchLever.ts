@@ -244,6 +244,29 @@ const formatJobData = (job: Job, company: string) => removeUndefined({
   employmentType: getEmploymentType(job.text),
   domain: getDomain(job.text),
 });
+function deduplicateJobs(jobs: any[]){
+  // Create a Map using a composite key of relevant fields
+  const uniqueJobsMap = new Map();
+  
+  jobs.forEach(job => {
+      // Create a composite key using fields that should make a job unique
+      const key = `${job.title}_${job.company}_${job.location}`.toLowerCase();
+      
+      // If this key already exists, only keep the more recently updated job
+      if (uniqueJobsMap.has(key)) {
+          const existingJob = uniqueJobsMap.get(key);
+          // For Lever jobs, updatedAt is already a timestamp number
+          if (job.updatedAt > existingJob.updatedAt) {
+              uniqueJobsMap.set(key, job);
+          }
+      } else {
+          uniqueJobsMap.set(key, job);
+      }
+  });
+  
+  return Array.from(uniqueJobsMap.values());
+}
+
 
 async function fetchAllJobs(): Promise<void> {
   const allJobs: Job[] = [];
@@ -256,10 +279,13 @@ async function fetchAllJobs(): Promise<void> {
       const jobCompany = await response.json() as [];
 
       const jobByCompany = jobCompany.map(job => formatJobData(job, companyName));
+      
+      const uniqueJobs = deduplicateJobs(jobByCompany);
+      console.log(`${companyName}: Reduced from ${jobByCompany.length} to ${uniqueJobs.length} jobs`);
 
       const docRef = doc(db, 'jobs', companyName);
       const details = {
-        data: jobByCompany
+        data: uniqueJobs
       };
 
       console.log("Saving all jobs from : ", companyName );

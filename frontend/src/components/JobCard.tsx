@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import {
   Briefcase,
@@ -45,6 +45,26 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 
+  // Reset to first page when jobs array changes (e.g., when filters change)
+  useEffect(() => {
+    setCurrentPage(1);
+    setApplyingJobs({}); // Reset applying state when jobs change
+  }, [jobs]);
+
+  // Calculate pagination details using useMemo
+  const { totalPages, currentJobs } = useMemo(() => {
+    const total = Math.max(1, Math.ceil(jobs.length / itemsPerPage));
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const currentItems = jobs.slice(start, end);
+
+    return {
+      totalPages: total,
+      currentJobs: currentItems,
+    };
+  }, [jobs, currentPage, itemsPerPage]);
+
+  // Load application statuses from localStorage
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
@@ -55,6 +75,7 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
     }
   }, []);
 
+  // Save application statuses to localStorage
   useEffect(() => {
     localStorage.setItem(
       "applicationStatuses",
@@ -62,15 +83,12 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
     );
   }, [applicationStatus]);
 
-  const totalPages = Math.ceil(jobs.length / itemsPerPage);
-  const paginatedJobs = jobs.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-  };
+  // Ensure current page is valid
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(Math.max(1, totalPages));
+    }
+  }, [totalPages, currentPage]);
 
   const handleApply = (job: Job) => {
     window.open(job.absolute_url, "_blank");
@@ -106,6 +124,14 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
     }
   };
 
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+      setApplyingJobs({}); // Reset applying state when changing pages
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   function getRelativeTime(date: string) {
     const updatedTime = new Date(date);
     const now = new Date();
@@ -132,14 +158,12 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
   return (
     <>
       <div className="space-y-4">
-        {paginatedJobs.map((job) => (
+        {currentJobs.map((job) => (
           <div
             key={job.id}
             className="p-6 bg-gray-800/50 backdrop-blur-lg border border-gray-700 rounded-lg hover:border-purple-500/50 transition-all duration-300"
           >
-            {/* Job Card Content */}
             <div className="flex flex-col md:flex-row justify-between gap-4">
-              {/* Left side - Job info */}
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-gray-700/50 overflow-hidden flex-shrink-0">
                   <img
@@ -194,7 +218,6 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
                 </div>
               </div>
 
-              {/* Right side - Actions */}
               <div className="flex flex-col items-end gap-2">
                 <span className="text-gray-400 text-sm">
                   Posted {getRelativeTime(job.updatedAt)}
@@ -274,9 +297,13 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
             <ChevronLeft size={16} />
           </button>
 
-          <span className="text-sm text-gray-400">
-            Page {currentPage} of {totalPages}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-400">
+              Showing {(currentPage - 1) * itemsPerPage + 1}-
+              {Math.min(currentPage * itemsPerPage, jobs.length)} of{" "}
+              {jobs.length} jobs
+            </span>
+          </div>
 
           <button
             onClick={() => handlePageChange(currentPage + 1)}
