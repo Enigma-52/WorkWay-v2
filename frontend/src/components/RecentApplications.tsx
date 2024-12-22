@@ -34,7 +34,7 @@ const RecentApplications = () => {
       timeAgo: "9 minutes ago",
       jobTitle: "Software Engineer Intern",
       company: "Google",
-      location: "Mountain View",
+      location: "SF",
       type: "Internship",
       userAvatar: "A",
       action: "applied",
