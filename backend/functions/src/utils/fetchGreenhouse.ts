@@ -413,6 +413,4 @@ const greenhouse = async (): Promise<void> => {
   return;
 };
 
-greenhouse();
-
 export default greenhouse;
