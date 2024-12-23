@@ -103,7 +103,6 @@ const HomePage: React.FC = () => {
         }
 
         const data = await response.json();
-        console.log("API Response:", data); // Log the entire response
 
         let allJobs: Job[] = [];
 
