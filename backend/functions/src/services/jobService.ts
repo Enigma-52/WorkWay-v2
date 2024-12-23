@@ -28,3 +28,21 @@ export const fetchAllJobs = async () => {
         }
     };
 };
+
+export const fetchAllTestJobs = async () => {
+    const jobsRef = collection(db, 'jobs2');
+
+    const snapshot = await getDocs(jobsRef);
+
+    const jobs = [] as any;
+    snapshot.forEach(doc => {
+        jobs.push({ company: doc.id, ...doc.data() });
+    });
+
+    return {
+        jobs,
+        meta: {
+            count: jobs.length,
+        }
+    };
+};

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import {
   Search,
   ChevronDown,
@@ -38,6 +38,22 @@ interface CompanyJobs {
 }
 
 const HomePage: React.FC = () => {
+  const location = useLocation();
+  const params = useParams();
+
+  // Initial state setup with URL parameters
+  const getInitialFilters = () => {
+    const searchParams = new URLSearchParams(location.search);
+    return {
+      jobTitle: searchParams.get("title") || "",
+      company: searchParams.get("company") || "",
+      location: searchParams.get("location") || "",
+      domain: searchParams.get("domain") || null,
+      experienceLevel: searchParams.get("experience") || null,
+      employmentType: searchParams.get("type") || null,
+    };
+  };
+
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [user, setUser] = useState<{ name: string; email: string } | null>(
     null
@@ -50,15 +66,93 @@ const HomePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [totalJobs, setTotalJobs] = useState<number>(0);
   const [companyJobs, setCompanyJobs] = useState<CompanyJobs[]>([]);
+  const [filters, setFilters] = useState(getInitialFilters());
 
-  const [filters, setFilters] = useState({
-    jobTitle: "",
-    company: "",
-    location: "",
-    domain: null as string | null,
-    experienceLevel: null as string | null,
-    employmentType: null as string | null,
-  });
+  useEffect(() => {
+    // Check if we're on a filtered route
+    const pathSegments = location.pathname.split("/").filter(Boolean);
+    if (pathSegments.length === 2) {
+      const [filterType, value] = pathSegments;
+      const newFilters = { ...getInitialFilters() };
+
+      switch (filterType.toLowerCase()) {
+        case "category":
+        case "domain":
+          newFilters.domain = decodeURIComponent(value);
+          break;
+        case "company":
+          newFilters.company = decodeURIComponent(value);
+          break;
+        case "experience":
+          newFilters.experienceLevel = decodeURIComponent(value);
+          break;
+        case "type":
+          newFilters.employmentType = decodeURIComponent(value);
+          break;
+      }
+
+      setFilters(newFilters);
+      updateURLParams(newFilters);
+    }
+  }, [location.pathname]);
+
+  // Update the URL params function to handle both path and query parameters
+  const updateURLParams = (currentFilters: typeof filters) => {
+    const searchParams = new URLSearchParams();
+    let newPath = "/";
+
+    // Determine if we should use path-based routing
+    if (currentFilters.domain) {
+      newPath = `/domain/${encodeURIComponent(currentFilters.domain)}`;
+    } else if (currentFilters.company) {
+      newPath = `/company/${encodeURIComponent(currentFilters.company)}`;
+    }
+
+    // Add remaining filters as query parameters
+    Object.entries(currentFilters).forEach(([key, value]) => {
+      if (
+        value &&
+        // Don't add domain/company as query param if it's in the path
+        !(
+          (key === "domain" && newPath.startsWith("/domain/")) ||
+          (key === "company" && newPath.startsWith("/company/"))
+        )
+      ) {
+        switch (key) {
+          case "jobTitle":
+            searchParams.set("title", value);
+            break;
+          case "experienceLevel":
+            searchParams.set("experience", value);
+            break;
+          case "employmentType":
+            searchParams.set("type", value);
+            break;
+          default:
+            searchParams.set(key, value);
+        }
+      }
+    });
+
+    const queryString = searchParams.toString();
+    const newURL = queryString ? `${newPath}?${queryString}` : newPath;
+    navigate(newURL, { replace: true });
+  };
+
+  // Update handleFilterChange to better handle filter changes
+  const handleFilterChange = (filterType: string, value: string) => {
+    const newFilters = {
+      ...filters,
+      [filterType]: value === "All" ? null : value,
+    };
+
+    setFilters(newFilters);
+    updateURLParams(newFilters);
+
+    if (["domain", "experienceLevel", "employmentType"].includes(filterType)) {
+      setOpenDropdown("");
+    }
+  };
 
   const experienceLevels = ["All", "Junior", "Mid-level", "Senior", "Lead"];
   const employmentTypes = ["All", "Intern", "Full-time", "Contract"];
@@ -96,7 +190,7 @@ const HomePage: React.FC = () => {
       setError(null);
       try {
         const token = process.env.REACT_APP_API_AUTH;
-        const response = await fetch(`${API_BASE_URL}/jobs/all`, {});
+        const response = await fetch(`${API_BASE_URL}/jobs/test/all`, {});
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -188,16 +282,6 @@ const HomePage: React.FC = () => {
 
   const toggleDropdown = (dropdown: string) => {
     setOpenDropdown(openDropdown === dropdown ? "" : dropdown);
-  };
-
-  const handleFilterChange = (filterType: string, value: string) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [filterType]: value === "All" ? null : value,
-    }));
-    if (["domain", "experienceLevel", "employmentType"].includes(filterType)) {
-      setOpenDropdown("");
-    }
   };
 
   const [openFaqItem, setOpenFaqItem] = useState<number | null>(null);

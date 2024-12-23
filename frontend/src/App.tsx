@@ -19,7 +19,14 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Home page with SEO */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/domain/:domain" element={<HomePage />} />
+        <Route path="/company/:company" element={<HomePage />} />
+        <Route path="/experience/:experience" element={<HomePage />} />
+        <Route path="/type/:type" element={<HomePage />} />
+
+        {/* Others */}
         <Route path="/features" element={<Features />} />
         <Route path="/login" element={<LoginSignupPage />} />
         <Route path="/alerts" element={<JobAlertsPage />} />
