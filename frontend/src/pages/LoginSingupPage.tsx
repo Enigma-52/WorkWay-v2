@@ -1,370 +1,332 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import {
-  TextField,
-  Button,
-  Typography,
-  Box,
-  CircularProgress,
-  Snackbar,
-  IconButton,
-  InputAdornment,
-} from "@mui/material";
-import { Mail, Lock, User, ArrowRight, Github } from "lucide-react";
-
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  Mail,
+  Lock,
+  User,
+  ArrowRight,
+  Github,
+  Loader2,
+  Briefcase,
+  Star,
+  Users,
+  Code,
+  Building2,
+  Globe,
+  Cpu,
+} from "lucide-react";
 
 const LoginSignupPage = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [otp, setOtp] = useState("");
-  const [showOtpInput, setShowOtpInput] = useState(false);
-  const [error, setError] = useState<string>("");
-  const [success, setSuccess] = useState<string>("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    name: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-    setSuccess("");
+  const features = [
+    {
+      icon: <Globe className="w-6 h-6 text-purple-400" />,
+      title: "30,000+ Active Jobs",
+      description: "Access to global opportunities",
+    },
+    {
+      icon: <Building2 className="w-6 h-6 text-purple-400" />,
+      title: "Top Companies",
+      description: "Work with industry leaders",
+    },
+    {
+      icon: <Users className="w-6 h-6 text-purple-400" />,
+      title: "Team Collaboration",
+      description: "Real-time collaboration tools",
+    },
+    {
+      icon: <Cpu className="w-6 h-6 text-purple-400" />,
+      title: "AI-Powered Matching",
+      description: "Smart job recommendations",
+    },
+  ];
 
-    try {
-      if (isLogin) {
-        const response = await axios.post(`${API_BASE_URL}/auth/login`, {
-          email,
-          password,
-        });
-        if (response.data.token) {
-          localStorage.setItem("token", response.data.token);
-          setSuccess("Login successful!");
-          navigate("/");
-        } else {
-          setShowOtpInput(true);
-          setSuccess("OTP sent to your email. Please check and enter below.");
-        }
-      } else {
-        const response = await axios.post(`${API_BASE_URL}/auth/signup`, {
-          name,
-          email,
-          password,
-        });
-        setSuccess("Account created successfully! Please login.");
-        setIsLogin(true);
-      }
-    } catch (err: any) {
-      setError(
-        err.response?.data?.message || "An error occurred. Please try again."
-      );
-    }
-    setIsLoading(false);
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
-    setSuccess("");
-
-    try {
-      const response = await axios.post(`${API_BASE_URL}/auth/verify-otp`, {
-        email,
-        otp,
-      });
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
-        setSuccess("Login successful!");
-        navigate("/");
-      } else {
-        setError("Invalid OTP. Please try again.");
-      }
-    } catch (err: any) {
-      setError(
-        err.response?.data?.message || "Failed to verify OTP. Please try again."
-      );
-    }
-    setIsLoading(false);
+    setTimeout(() => {
+      setIsLoading(false);
+      setMessage({ type: "success", text: "Successfully logged in!" });
+      navigate("/");
+    }, 1500);
   };
 
-  const handleSocialLogin = async (provider: string) => {
+  const handleSocialLogin = (provider: any) => {
     setIsLoading(true);
-    setError("");
-    setSuccess("");
-
-    try {
-      let response;
-      if (provider === "Google") {
-        response = await axios.post(`${API_BASE_URL}/auth/google-signin`);
-      } else if (provider === "GitHub") {
-        response = await axios.post(`${API_BASE_URL}/auth/github-signin`);
-      }
-
-      if (response?.data.token) {
-        localStorage.setItem("token", response.data.token);
-        setSuccess(`Login with ${provider} successful!`);
-        navigate("/");
-      }
-    } catch (err) {
-      setError(`Failed to login with ${provider}. Please try again.`);
-    }
-    setIsLoading(false);
+    setTimeout(() => {
+      setIsLoading(false);
+      setMessage({ type: "success", text: `Logged in with ${provider}!` });
+      navigate("/");
+    }, 1500);
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "linear-gradient(to bottom right, #1a202c, #4a1d96)",
-        color: "white",
-      }}
-    >
-      <Box
-        sx={{
-          backgroundColor: "rgba(31, 41, 55, 0.8)",
-          p: 6,
-          borderRadius: 4,
-          width: "100%",
-          maxWidth: 450,
-          boxShadow:
-            "0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)",
-        }}
-      >
-        <Typography variant="h3" align="center" gutterBottom fontWeight="bold">
-          <span style={{ color: "white" }}>Work</span>
-          <span style={{ color: "#a78bfa" }}>Way</span>
-        </Typography>
-        <Typography
-          variant="h5"
-          align="center"
-          gutterBottom
-          fontWeight="medium"
-          sx={{ mb: 4 }}
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-violet-800 p-4 md:p-0">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -left-4 top-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute right-0 bottom-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+      </div>
+
+      <div className="relative w-full max-w-5xl grid md:grid-cols-2 gap-8 items-center p-8">
+        {/* Features Section */}
+        <div className="hidden md:block space-y-8 transform animate-fade-in">
+          <div className="text-white space-y-4">
+            <h1 className="text-5xl font-bold mb-6">
+              <span className="text-white">Work</span>
+              <span className="bg-gradient-to-r from-purple-400 to-violet-400 bg-clip-text text-transparent">
+                Way
+              </span>
+            </h1>
+            <p className="text-xl text-white/80 mb-12">
+              Your gateway to endless career possibilities. Join thousands of
+              professionals finding their dream jobs.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-6">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm
+                transform transition-all duration-300 hover:scale-105 hover:bg-white/10
+                animate-fade-up"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="mb-4">{feature.icon}</div>
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-white/60">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Login/Signup Form */}
+        <div className="w-full max-w-md mx-auto">
+          <div
+            className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 md:p-10 shadow-2xl border border-white/10
+            transform transition-all duration-500 hover:shadow-purple-500/20 animate-fade-up"
+          >
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-bold mb-4 text-white">
+                {isLogin ? "Welcome back!" : "Create account"}
+              </h2>
+              <p className="text-white/60">
+                {isLogin
+                  ? "Let's get you back to your workspace"
+                  : "Start your journey with WorkWay"}
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {!isLogin && (
+                <div
+                  className="relative group animate-fade-up"
+                  style={{ animationDelay: "100ms" }}
+                >
+                  <div
+                    className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-lg blur 
+                    opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  ></div>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Full Name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-lg pl-12 text-white
+                      placeholder:text-white/40 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50
+                      transition-all duration-300"
+                  />
+                  <User
+                    className="absolute left-4 top-4 text-white/40 group-hover:text-purple-400 transition-colors duration-300"
+                    size={20}
+                  />
+                </div>
+              )}
+
+              <div
+                className="relative group animate-fade-up"
+                style={{ animationDelay: "200ms" }}
+              >
+                <div
+                  className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-lg blur 
+                  opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                ></div>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-lg pl-12 text-white
+                    placeholder:text-white/40 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50
+                    transition-all duration-300"
+                />
+                <Mail
+                  className="absolute left-4 top-4 text-white/40 group-hover:text-purple-400 transition-colors duration-300"
+                  size={20}
+                />
+              </div>
+
+              <div
+                className="relative group animate-fade-up"
+                style={{ animationDelay: "300ms" }}
+              >
+                <div
+                  className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-lg blur 
+                  opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                ></div>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-lg pl-12 text-white
+                    placeholder:text-white/40 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/50
+                    transition-all duration-300"
+                />
+                <Lock
+                  className="absolute left-4 top-4 text-white/40 group-hover:text-purple-400 transition-colors duration-300"
+                  size={20}
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-lg px-5 py-4 font-medium
+                  transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25
+                  disabled:opacity-50 disabled:hover:scale-100 group relative animate-fade-up"
+                style={{ animationDelay: "400ms" }}
+              >
+                <div
+                  className="absolute inset-0 bg-gradient-to-r from-purple-500/50 to-violet-500/50 rounded-lg blur opacity-0 
+                  group-hover:opacity-100 transition-opacity duration-300"
+                ></div>
+                <span className="relative flex items-center justify-center">
+                  {isLoading ? (
+                    <Loader2 className="animate-spin" size={24} />
+                  ) : (
+                    <>
+                      {isLogin ? "Sign In" : "Create Account"}
+                      <ArrowRight className="ml-2" size={20} />
+                    </>
+                  )}
+                </span>
+              </button>
+
+              <div
+                className="relative my-8 animate-fade-up"
+                style={{ animationDelay: "500ms" }}
+              >
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-white/10"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-transparent text-white/60">
+                    or continue with
+                  </span>
+                </div>
+              </div>
+
+              <div
+                className="flex gap-4 justify-center animate-fade-up"
+                style={{ animationDelay: "600ms" }}
+              >
+                <button
+                  type="button"
+                  onClick={() => handleSocialLogin("Google")}
+                  className="p-4 bg-white/5 rounded-lg border border-white/10 transition-all duration-300
+                    hover:bg-white/10 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/20"
+                >
+                  <svg className="w-6 h-6" viewBox="0 0 24 24">
+                    <path
+                      fill="#EA4335"
+                      d="M12 5.04c2.17 0 4.1.72 5.63 1.92l4.13-4.13C19.17 .24 15.7-1 12 1 7.31 1 3.23 3.53.65 7.28l4.84 3.77c1.17-3.5 4.48-6.01 8.51-6.01z"
+                    />
+                    <path
+                      fill="#4285F4"
+                      d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96l-3.98 3.09C3.74 20.85 7.49 24 12 24z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSocialLogin("GitHub")}
+                  className="p-4 bg-white/5 rounded-lg border border-white/10 transition-all duration-300
+                    hover:bg-white/10 hover:scale-110 hover:shadow-lg hover:shadow-purple-500/20"
+                >
+                  <Github className="w-6 h-6 text-white" />
+                </button>
+              </div>
+
+              <div
+                className="mt-8 text-center animate-fade-up"
+                style={{ animationDelay: "700ms" }}
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLogin(!isLogin);
+                    setMessage({ type: "", text: "" });
+                  }}
+                  className="text-white/60 hover:text-white transition-colors duration-300"
+                >
+                  {isLogin
+                    ? "Don't have an account?"
+                    : "Already have an account?"}
+                  <span className="ml-2 text-purple-400 hover:text-purple-300">
+                    {isLogin ? "Sign up" : "Sign in"}
+                  </span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {/* Message Toast */}
+      {message.text && (
+        <div
+          className={`fixed bottom-4 right-4 px-6 py-3 rounded-lg text-white ${
+            message.type === "error" ? "bg-red-500" : "bg-emerald-500"
+          } transform transition-all duration-500 animate-slide-up`}
         >
-          {isLogin ? "Welcome Back!" : "Create an Account"}
-        </Typography>
-
-        <form onSubmit={showOtpInput ? handleOtpSubmit : handleSubmit}>
-          {!isLogin && (
-            <TextField
-              fullWidth
-              label="Full Name"
-              variant="outlined"
-              margin="normal"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <User size={20} color="#a78bfa" />
-                  </InputAdornment>
-                ),
-              }}
-              sx={textFieldStyle}
-            />
-          )}
-          <TextField
-            fullWidth
-            label="Email Address"
-            variant="outlined"
-            margin="normal"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Mail size={20} color="#a78bfa" />
-                </InputAdornment>
-              ),
-            }}
-            sx={textFieldStyle}
-          />
-          {!showOtpInput && (
-            <TextField
-              fullWidth
-              label="Password"
-              variant="outlined"
-              margin="normal"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Lock size={20} color="#a78bfa" />
-                  </InputAdornment>
-                ),
-              }}
-              sx={textFieldStyle}
-            />
-          )}
-          {showOtpInput && (
-            <TextField
-              fullWidth
-              label="Enter OTP"
-              variant="outlined"
-              margin="normal"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              required
-              sx={textFieldStyle}
-            />
-          )}
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{
-              mt: 3,
-              mb: 2,
-              bgcolor: "#7c3aed",
-
-              color: "white",
-              py: 1.5,
-              fontSize: "1rem",
-              fontWeight: "bold",
-              boxShadow: "0 4px 6px rgba(124, 58, 237, 0.5)",
-              transition: "all 0.3s ease-in-out",
-              "&:hover": {
-                bgcolor: "#6d28d9",
-                transform: "translateY(-2px)",
-                boxShadow: "0 6px 8px rgba(124, 58, 237, 0.6)",
-              },
-            }}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              <>
-                {showOtpInput ? "Verify OTP" : isLogin ? "Login" : "Sign Up"}
-                <ArrowRight size={20} style={{ marginLeft: "8px" }} />
-              </>
-            )}
-          </Button>
-        </form>
-
-        <Typography align="center" sx={{ mt: 3, mb: 3, color: "#9ca3af" }}>
-          Or continue with
-        </Typography>
-
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 3 }}>
-          <IconButton
-            onClick={() => handleSocialLogin("Google")}
-            sx={socialButtonStyle}
-            disabled={isLoading}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 48 48"
-              width="24px"
-              height="24px"
-            >
-              <path
-                fill="#FFC107"
-                d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
-              />
-              <path
-                fill="#FF3D00"
-                d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
-              />
-              <path
-                fill="#4CAF50"
-                d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
-              />
-              <path
-                fill="#1976D2"
-                d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
-              />
-            </svg>
-          </IconButton>
-          <IconButton
-            onClick={() => handleSocialLogin("GitHub")}
-            sx={socialButtonStyle}
-            disabled={isLoading}
-          >
-            <Github size={24} />
-          </IconButton>
-        </Box>
-
-        <Typography align="center" sx={{ mt: 4, color: "#9ca3af" }}>
-          {isLogin ? "Don't have an account?" : "Already have an account?"}
-          <Button
-            sx={{
-              ml: 1,
-              color: "#a78bfa",
-              fontWeight: "bold",
-              "&:hover": {
-                bgcolor: "transparent",
-                textDecoration: "underline",
-              },
-            }}
-            onClick={() => {
-              setIsLogin(!isLogin);
-              setShowOtpInput(false);
-              setError("");
-              setSuccess("");
-            }}
-            disabled={isLoading}
-          >
-            {isLogin ? "Sign Up" : "Login"}
-          </Button>
-        </Typography>
-      </Box>
-
-      <Snackbar
-        open={!!error || !!success}
-        autoHideDuration={6000}
-        onClose={() => {
-          setError("");
-          setSuccess("");
-        }}
-        message={error || success}
-        sx={{
-          "& .MuiSnackbarContent-root": {
-            bgcolor: error ? "#ef4444" : "#10b981",
-            color: "white",
-            fontWeight: "bold",
-          },
-        }}
-      />
-    </Box>
+          {message.text}
+        </div>
+      )}
+    </div>
   );
-};
-
-const textFieldStyle = {
-  mb: 2,
-  "& .MuiOutlinedInput-root": {
-    color: "white",
-    "& fieldset": { borderColor: "#4b5563" },
-    "&:hover fieldset": { borderColor: "#9ca3af" },
-    "&.Mui-focused fieldset": { borderColor: "#a78bfa" },
-  },
-  "& .MuiInputLabel-root": { color: "#9ca3af" },
-  "& .MuiInputAdornment-root": { mr: 1.5 },
-};
-
-const socialButtonStyle = {
-  color: "white",
-  bgcolor: "rgba(75, 85, 99, 0.8)",
-  "&:hover": {
-    bgcolor: "rgba(75, 85, 99, 1)",
-    transform: "translateY(-2px)",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  transition: "all 0.3s ease-in-out",
-  width: 48,
-  height: 48,
 };
 
 export default LoginSignupPage;
