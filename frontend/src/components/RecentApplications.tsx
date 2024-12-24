@@ -1,138 +1,117 @@
 import React from "react";
-import { Activity, Users, Clock } from "lucide-react";
+import { Activity } from "lucide-react";
+
+type ActivityType = "Application" | "Signup" | "Alert";
+
+interface ActivityItem {
+  time: string;
+  role: string;
+  company: string;
+  location: string;
+  type: ActivityType;
+}
 
 const RecentApplications = () => {
-  const recentActivities = [
+  const activities: ActivityItem[] = [
     {
-      timeAgo: "1 minute ago",
-      jobTitle: "Social Media Lead",
+      time: "1m",
+      role: "Social Media Lead",
       company: "Fabric of Truth",
       location: "Remote",
-      type: "Freelance",
-      userAvatar: "M", // First letter of random name for avatar
-      action: "applied",
+      type: "Application",
     },
     {
-      timeAgo: "3 minutes ago",
-      jobTitle: "Backend Developer",
+      time: "3m",
+      role: "Backend Developer",
       company: "Inflection.io",
-      location: "San Francisco",
-      type: "Full-time",
-      userAvatar: "R",
-      action: "saved",
-    },
-    {
-      timeAgo: "9 minutes ago",
-      jobTitle: "React Native Developer",
-      company: "ThirstySprout",
-      location: "New York",
-      type: "Contract",
-      userAvatar: "J",
-      action: "applied",
-    },
-    {
-      timeAgo: "9 minutes ago",
-      jobTitle: "Software Engineer Intern",
-      company: "Google",
       location: "SF",
-      type: "Internship",
-      userAvatar: "A",
-      action: "applied",
+      type: "Alert",
+    },
+    {
+      time: "9m",
+      role: "React Native Dev",
+      company: "ThirstySprout",
+      location: "NY",
+      type: "Application",
+    },
+    {
+      time: "9m",
+      role: "SE Intern",
+      company: "",
+      location: "",
+      type: "Signup",
     },
   ];
 
-  const getActionStyle = (action: string) => {
-    switch (action) {
-      case "applied":
-        return "bg-green-500/10 text-green-400";
-      case "saved":
-        return "bg-blue-500/10 text-blue-400";
+  const getTagStyle = (type: ActivityType): string => {
+    const styles = {
+      Application:
+        "bg-gradient-to-r from-emerald-500/20 to-emerald-500/10 text-emerald-400 border-emerald-500/20",
+      Signup:
+        "bg-gradient-to-r from-blue-500/20 to-blue-500/10 text-blue-400 border-blue-500/20",
+      Alert:
+        "bg-gradient-to-r from-amber-500/20 to-amber-500/10 text-amber-400 border-amber-500/20",
+    };
+    return styles[type];
+  };
+
+  const formatActivity = (activity: ActivityItem): string => {
+    switch (activity.type) {
+      case "Application":
+        return `Someone applied to ${activity.role} at ${activity.company} in ${activity.location}`;
+      case "Signup":
+        return "Someone signed up on Workway";
+      case "Alert":
+        return `Someone set alert for ${activity.role}`;
       default:
-        return "bg-purple-500/10 text-purple-400";
+        return "";
     }
   };
 
-  const getRandomColor = (letter: string) => {
-    const colors = [
-      "bg-purple-500",
-      "bg-blue-500",
-      "bg-green-500",
-      "bg-yellow-500",
-      "bg-pink-500",
-      "bg-indigo-500",
-    ];
-    return colors[letter.charCodeAt(0) % colors.length];
-  };
-
   return (
-    <div className="bg-gray-800/30 backdrop-blur-sm border border-white/10 rounded-xl">
-      {/* Header */}
-      <div className="p-4 border-b border-white/10">
-        <div className="flex items-center justify-between mb-1">
-          <h3 className="text-xl font-semibold text-white flex items-center">
-            <Activity className="text-purple-400 mr-2" size={20} />
-            Live Feed
+    <div className="bg-gray-900/90 backdrop-blur-xl border border-white/10 rounded-2xl w-full shadow-xl shadow-purple-500/5">
+      <div className="p-8 border-b border-white/10 bg-gradient-to-b from-white/5 to-transparent">
+        <div className="flex items-center justify-between">
+          <h3 className="text-2xl font-semibold text-white flex items-center bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
+            <Activity className="text-white mr-3" size={24} />
+            Recent Activities on WorkWay
           </h3>
-          <div className="flex items-center">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2"></div>
-            <span className="text-green-400 text-sm">Live</span>
+          <div className="flex items-center space-x-2 text-sm bg-white/5 px-3 py-2 rounded-full">
+            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+            <span className="text-emerald-400">Live</span>
           </div>
         </div>
-        <p className="text-white/60 text-sm ml-7">See what others are doing</p>
       </div>
 
-      {/* Activity List */}
-      <div className="divide-y divide-white/10">
-        {recentActivities.map((activity, index) => (
+      <div className="text-left divide-y divide-white/[0.06]">
+        {activities.map((item, i) => (
           <div
-            key={index}
-            className="p-4 hover:bg-white/5 transition-colors duration-300 group"
+            key={i}
+            className="p-6 hover:bg-white/[0.02] transition-all duration-300 group relative overflow-hidden"
           >
-            <div className="flex items-start space-x-3">
-              {/* User Avatar */}
-              <div
-                className={`w-8 h-8 rounded-full ${getRandomColor(
-                  activity.userAvatar
-                )} flex items-center justify-center text-white font-medium flex-shrink-0`}
-              >
-                {activity.userAvatar}
+            <div className="relative z-10">
+              <div className="flex items-center gap-4">
+                <span
+                  className={`px-4 py-2 rounded-full text-sm font-medium border ${getTagStyle(
+                    item.type
+                  )}`}
+                >
+                  {item.type}
+                </span>
+                <span className="text-white/40 text-sm">{item.time} ago</span>
               </div>
 
-              <div className="flex-1 min-w-0">
-                {/* Action and Time */}
-                <div className="flex items-center text-sm space-x-2 mb-1">
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-xs ${getActionStyle(
-                      activity.action
-                    )}`}
-                  >
-                    {activity.action}
-                  </span>
-                  <span className="text-white/40">•</span>
-                  <span className="text-white/40 text-xs">
-                    {activity.timeAgo}
-                  </span>
-                </div>
-
-                {/* Job Details */}
-                <p className="text-white/90 text-base font-medium truncate group-hover:text-purple-400 transition-colors">
-                  {activity.jobTitle}
-                </p>
-                <p className="text-white/60 text-sm mt-0.5">
-                  {activity.company} • {activity.location}
-                </p>
-              </div>
+              <p className="mt-3 text-base text-white/70">
+                {formatActivity(item)}
+              </p>
             </div>
+            <div
+              className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/0 to-purple-500/0 
+              group-hover:from-purple-500/[0.02] group-hover:via-purple-500/[0.02] group-hover:to-purple-500/0 
+              transition-all duration-500"
+            ></div>
           </div>
         ))}
-      </div>
-
-      {/* Footer Stats */}
-      <div className="p-4 border-t border-white/10 bg-white/5">
-        <div className="flex items-center justify-center text-sm text-white/60">
-          <Users size={16} className="mr-2" />
-          <span>428 users active today</span>
-        </div>
       </div>
     </div>
   );
