@@ -137,7 +137,6 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 10 }) => {
   };
 
   const handleViewDetails = (job: Job) => {
-    // Update viewed jobs in state and localStorage
     const timestamp = Date.now();
     const updatedViewedJobs = {
       ...viewedJobs,
@@ -146,7 +145,6 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 10 }) => {
     setViewedJobs(updatedViewedJobs);
     localStorage.setItem("viewedJobs", JSON.stringify(updatedViewedJobs));
 
-    // Open job details in new tab
     const jobString = JSON.stringify(job);
     window.open(`/job-details?job=${encodeURIComponent(jobString)}`, "_blank");
   };
@@ -199,8 +197,7 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 10 }) => {
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
-      setApplyingJobs({}); // Reset applying state when changing pages
-      //window.scrollTo({ top: 0, behavior: "smooth" });
+      setApplyingJobs({});
     }
   };
 
@@ -289,23 +286,31 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 10 }) => {
                     {isLeverJob(job) && job.workplaceType && (
                       <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm bg-indigo-500/20 text-indigo-300">
                         <Building2 size={16} />
-                        {job.workplaceType}
+                        {job.workplaceType.charAt(0).toUpperCase() +
+                          job.workplaceType.slice(1)}
                       </span>
                     )}
                     {isLeverJob(job) && job.salaryRange && (
                       <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm bg-green-500/20 text-green-300">
-                        <DollarSign size={16} />
                         {formatSalary(
                           job.salaryRange.min,
                           job.salaryRange.currency
-                        )}{" "}
-                        -{" "}
+                        )}
+                        {" - "}
                         {formatSalary(
                           job.salaryRange.max,
                           job.salaryRange.currency
                         )}
                         {job.salaryRange.interval === "per-year-salary"
                           ? "/year"
+                          : job.salaryRange.interval === "per-month-salary"
+                          ? "/month"
+                          : job.salaryRange.interval === "per-week-salary"
+                          ? "/week"
+                          : job.salaryRange.interval === "per-day-salary"
+                          ? "/day"
+                          : job.salaryRange.interval === "per-hour-salary"
+                          ? "/hour"
                           : ""}
                       </span>
                     )}

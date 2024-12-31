@@ -36,6 +36,24 @@ const Footer: React.FC = () => {
                 Login
               </a>
             </li>
+            <li>
+              <a
+                href="/alerts"
+                className="text-gray-400 hover:text-white transition-colors duration-200"
+                aria-label="Go to login page"
+              >
+                Job Alerts
+              </a>
+            </li>
+            <li>
+              <a
+                href="/applications"
+                className="text-gray-400 hover:text-white transition-colors duration-200"
+                aria-label="Go to login page"
+              >
+                Your Applications
+              </a>
+            </li>
           </ul>
         </div>
 

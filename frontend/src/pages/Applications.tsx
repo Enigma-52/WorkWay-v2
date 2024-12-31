@@ -94,7 +94,7 @@ const ApplicationsPage = () => {
 
   return (
     <div className="text-white min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 max-w-6xl relative">
         <Navbar isLoggedIn={isLoggedIn} user={user} onLogout={handleLogout} />
 
         <div className="max-w-6xl mx-auto">
