@@ -43,7 +43,7 @@ interface JobCardProps {
   itemsPerPage?: number;
 }
 
-const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 4 }) => {
+const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 10 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [applicationStatus, setApplicationStatus] = useState<{
     [key: string]: "none" | "applied" | "skipped";

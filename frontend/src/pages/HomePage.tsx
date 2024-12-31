@@ -372,7 +372,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="bg-gradient-to-br from-gray-900 to-purple-900 min-h-screen text-white text-lg">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="container mx-auto px-4 py-8 max-w-6xl relative">
         <Navbar isLoggedIn={isLoggedIn} user={user} onLogout={handleLogout} />
 
         <main className="text-center mb-16">
@@ -478,7 +478,7 @@ const HomePage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <JobCard jobs={filteredJobs} />
+                    <JobCard jobs={filteredJobs} itemsPerPage={10} />
                   </div>
                 )}
               </div>
@@ -486,7 +486,9 @@ const HomePage: React.FC = () => {
 
             {/* Right sidebar - recent applications */}
             <div className="lg:col-span-2">
-              <RecentApplications />
+              <div className="sticky top-4">
+                <RecentApplications />
+              </div>
             </div>
           </div>
         </main>
