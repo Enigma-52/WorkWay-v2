@@ -11,7 +11,7 @@ const {
 //TODO : EXPIRY CHECKER
 
 const companyNameList = [
-    "Dodmg"
+    "Accurate"
 ]
 
 
