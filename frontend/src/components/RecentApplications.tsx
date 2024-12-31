@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Activity } from "lucide-react";
 
 type ActivityType = "Application" | "Signup" | "Alert";
@@ -12,6 +12,18 @@ interface ActivityItem {
 }
 
 const RecentApplications = () => {
+  const [isSticky, setIsSticky] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const offset = window.scrollY;
+      setIsSticky(offset > 100); // Adjust this value based on when you want the sticky effect to start
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const activities: ActivityItem[] = [
     {
       time: "1m",
@@ -69,12 +81,18 @@ const RecentApplications = () => {
   };
 
   return (
-    <div className="bg-gray-900/90 backdrop-blur-xl border border-white/10 rounded-2xl w-full shadow-xl shadow-purple-500/5">
-      <div className="p-8 border-b border-white/10 bg-gradient-to-b from-white/5 to-transparent">
+    <div
+      className={`bg-gray-900/90 backdrop-blur-xl border border-white/10 rounded-2xl w-full shadow-xl shadow-purple-500/5
+        transition-all duration-300 lg:sticky ${
+          isSticky ? "lg:top-4" : "lg:top-4"
+        }
+        max-h-[calc(100vh-2rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-purple-500/20 scrollbar-track-transparent`}
+    >
+      <div className="sticky top-0 z-20 p-8 border-b border-white/10 bg-gray-900/95 backdrop-blur-xl">
         <div className="flex items-center justify-between">
           <h3 className="text-2xl font-semibold text-white flex items-center bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
             <Activity className="text-white mr-3" size={24} />
-            Recent Activities on WorkWay
+            Recent Activities
           </h3>
           <div className="flex items-center space-x-2 text-sm bg-white/5 px-3 py-2 rounded-full">
             <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
@@ -83,7 +101,7 @@ const RecentApplications = () => {
         </div>
       </div>
 
-      <div className="text-left divide-y divide-white/[0.06]">
+      <div className="text-left divide-y divide-white/[0.06] relative">
         {activities.map((item, i) => (
           <div
             key={i}

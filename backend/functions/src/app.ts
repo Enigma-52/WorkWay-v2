@@ -3,7 +3,7 @@ import cors from 'cors';
 import jobRoutes from './routes/jobRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
-import jobAlertsRoutes from '.routes/jobAlertsRoutes.js'
+import jobAlertsRoutes from './routes/jobAlertsRoutes.js';
 import fetch from './utils/fetcher.js';
 
 const app = express();
