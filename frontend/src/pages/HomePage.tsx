@@ -178,7 +178,7 @@ const HomePage: React.FC = () => {
       setError(null);
       try {
         const token = process.env.REACT_APP_API_AUTH;
-        const response = await fetch(`${API_BASE_URL}/jobs/all`, {});
+        const response = await fetch(`${API_BASE_URL}/jobs/test/all`, {});
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -306,31 +306,69 @@ const HomePage: React.FC = () => {
     setOpenFaqItem(openFaqItem === index ? null : index);
   };
 
-  const SkeletonLoader = () => (
-    <div className="bg-gray-800 p-6 rounded-xl shadow-lg mb-6 w-full animate-pulse">
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex items-center">
-          <div className="w-12 h-12 bg-gray-700 rounded-full mr-4"></div>
-          <div className="text-left">
-            <div className="h-8 bg-gray-700 rounded w-64 mb-2"></div>
-            <div className="h-6 bg-gray-700 rounded w-48"></div>
+  const SkeletonLoader = () => {
+    const [progress, setProgress] = useState(0);
+
+    useEffect(() => {
+      let startTime = Date.now();
+      const duration = 8000; // 8 seconds
+
+      const updateProgress = () => {
+        const currentTime = Date.now();
+        const elapsed = currentTime - startTime;
+        const newProgress = Math.min(99, (elapsed / duration) * 99);
+
+        if (elapsed < duration) {
+          setProgress(Math.floor(newProgress));
+          requestAnimationFrame(updateProgress);
+        }
+      };
+
+      const animationFrame = requestAnimationFrame(updateProgress);
+
+      return () => cancelAnimationFrame(animationFrame);
+    }, []);
+
+    return (
+      <div className="bg-gray-800 p-6 rounded-xl shadow-lg mb-6 w-full">
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex items-center">
+            <div className="w-12 h-12 bg-gray-700 rounded-full mr-4 animate-pulse"></div>
+            <div className="text-left">
+              <div className="h-8 bg-gray-700 rounded w-64 mb-2 animate-pulse"></div>
+              <div className="h-6 bg-gray-700 rounded w-48 animate-pulse"></div>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="h-4 bg-gray-700 rounded w-32 mb-2 animate-pulse"></div>
+            <div className="h-10 bg-gray-700 rounded-full w-24 animate-pulse"></div>
           </div>
         </div>
-        <div className="text-right">
-          <div className="h-4 bg-gray-700 rounded w-32 mb-2"></div>
-          <div className="h-10 bg-gray-700 rounded-full w-24"></div>
+        <div className="flex flex-wrap mt-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="h-8 bg-gray-700 rounded-full w-24 mr-2 mb-2 animate-pulse"
+            ></div>
+          ))}
+        </div>
+        <div className="mt-4 relative pt-1">
+          <div className="flex justify-between mb-1">
+            <span className="text-sm font-medium text-purple-400">Loading</span>
+            <span className="text-sm font-medium text-purple-400">
+              {progress}%
+            </span>
+          </div>
+          <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-700">
+            <div
+              style={{ width: `${progress}%` }}
+              className="transition-all duration-300 ease-out shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-500"
+            ></div>
+          </div>
         </div>
       </div>
-      <div className="flex flex-wrap mt-4">
-        {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className="h-8 bg-gray-700 rounded-full w-24 mr-2 mb-2"
-          ></div>
-        ))}
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="bg-gradient-to-br from-gray-900 to-purple-900 min-h-screen text-white text-lg">
@@ -339,7 +377,7 @@ const HomePage: React.FC = () => {
 
         <main className="text-center mb-16">
           <p className="text-green-400 mb-4 animate-pulse text-xl">
-            30,000+ active jobs
+            20,000+ active jobs
           </p>
           <h2 className="text-6xl font-bold mb-6 leading-tight">
             Find your Dream Job
