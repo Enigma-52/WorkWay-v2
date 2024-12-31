@@ -190,7 +190,9 @@ const JobDetailsPage = () => {
                   )}
                   {isLeverJob(job) && job.workplaceType && (
                     <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm bg-indigo-500/20 text-indigo-300">
-                      <Building2 size={16} /> {job.workplaceType}
+                      <Building2 size={16} />{" "}
+                      {job.workplaceType.charAt(0).toUpperCase() +
+                        job.workplaceType.slice(1)}
                     </span>
                   )}
                   {isLeverJob(job) && job.salaryRange && (
@@ -249,28 +251,26 @@ const JobDetailsPage = () => {
                 </span>
               </div>
 
-              <div className="prose prose-invert max-w-none mt-8">
-                <div
-                  dangerouslySetInnerHTML={{ __html: job.description }}
-                  className="prose-headings:text-white prose-headings:font-semibold prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4 prose-p:text-gray-200 prose-p:leading-relaxed prose-p:my-4 prose-p:first-of-type:mt-0 prose-ul:list-disc prose-ul:pl-6 prose-ul:my-4 prose-li:text-gray-200 prose-li:my-2 prose-strong:text-white prose-a:text-purple-400 prose-a:no-underline hover:prose-a:text-purple-300"
-                />
-              </div>
+              <div
+                className="text-lg max-w-none mt-8 text-gray-200"
+                dangerouslySetInnerHTML={{ __html: job.description }}
+              />
 
               {isLeverJob(job) && (
-                <div className="prose prose-invert max-w-none mt-8">
+                <div className="prose prose-invert max-w-none mt-10">
                   {job.lists?.map((list, index) => (
-                    <div key={index} className="mt-6">
-                      <h3 className="text-xl font-semibold mb-4">
+                    <div key={index} className="mt-8">
+                      <h3 className="text-lg font-semibold mb-6">
                         {list.text}
                       </h3>
                       <div
                         dangerouslySetInnerHTML={{ __html: list.content }}
-                        className="list-disc pl-6"
+                        className=" text-lg list-disc pl-8"
                       />
                     </div>
                   ))}
                   {job.additional && (
-                    <div className="mt-8">
+                    <div className="mt-10">
                       <div
                         dangerouslySetInnerHTML={{ __html: job.additional }}
                       />
