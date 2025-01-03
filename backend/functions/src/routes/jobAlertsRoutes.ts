@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { listJobAlerts }  from '../controllers/jobAlertsController.js';
+import { listJobAlerts ,updateJobAlert ,addJobAlert }  from '../controllers/jobAlertsController.js';
 
 const router = Router();
 
 router.get('/', listJobAlerts);
+router.get('/add', addJobAlert);
+router.get('/update', updateJobAlert);
 
 export default router;

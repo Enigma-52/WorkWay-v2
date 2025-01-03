@@ -1,9 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import jobRoutes from './routes/jobRoutes.js';
-import authRoutes from './routes/authRoutes.js';
-import applicationRoutes from './routes/applicationRoutes.js';
-import jobAlertsRoutes from './routes/jobAlertsRoutes.js';
+import routes from './routes/index'
 import fetch from './utils/fetcher.js';
 
 const app = express();
@@ -35,10 +32,12 @@ app.get('/cron', async (req: Request, res: Response) => {
     res.status(200).json({ message: 'Jobs Loaded' });
 });
 
-app.use('/api/jobs', jobRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/applications', applicationRoutes);
-app.use('/api/jobAlerts', jobAlertsRoutes);
+app.use('/api/jobs', routes.jobRoutes);
+app.use('/api/auth', routes.authRoutes);
+app.use('/api/applications', routes.applicationRoutes);
+app.use('/api/jobAlerts', routes.jobAlertsRoutes);
+app.use('/api/resume' , routes.resumeRoutes);
+app.use('api/discussion' , routes.discussionRoutes);
 
 // Error handling middleware with proper types
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
