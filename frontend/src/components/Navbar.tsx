@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Briefcase, User, LogOut } from "lucide-react";
+import { Bell, Briefcase, User, LogOut, MessageSquare } from "lucide-react";
 
 interface NavbarProps {
   isLoggedIn: boolean;
@@ -27,6 +27,13 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, user, onLogout }) => {
         >
           <Bell size={16} className="mr-2" />
           Job Alerts
+        </button>
+        <button
+          onClick={() => navigate("/discussions")}
+          className="bg-purple-600 hover:bg-purple-700 transition-colors px-4 py-2 rounded-full text-sm font-semibold flex items-center"
+        >
+          <MessageSquare size={16} className="mr-2" />
+          Discussions
         </button>
         <button
           onClick={() => navigate("/applications")}
