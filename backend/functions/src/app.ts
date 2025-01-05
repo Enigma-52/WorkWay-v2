@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import routes from './routes/index'
+import routes from './routes/index.js';
 import fetch from './utils/fetcher.js';
 
 const app = express();
