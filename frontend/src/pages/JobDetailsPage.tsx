@@ -13,6 +13,8 @@ import {
   Building2,
   Users,
   DollarSign,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -61,7 +63,98 @@ const JobDetailsPage = () => {
   const [user, setUser] = useState<{ name: string; email: string } | null>(
     null
   );
+  const [applicationState, setApplicationState] = useState<
+    "initial" | "pending" | "applied" | "skipped"
+  >("initial");
+
   const navigate = useNavigate();
+
+  const handleApplyClick = async () => {
+    setApplicationState("pending");
+    window.open(job?.absolute_url, "_blank");
+  };
+
+  const handleApplicationChoice = async (choice: "applied" | "skipped") => {
+    if (choice === "applied") {
+      try {
+        // Replace with your actual API endpoint
+        const response = await fetch("/api/applications", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            jobId: job?.id,
+            userId: user?.email,
+            status: "applied",
+          }),
+        });
+
+        if (response.ok) {
+          setApplicationState("applied");
+        } else {
+          throw new Error("Failed to record application");
+        }
+      } catch (error) {
+        console.error("Error recording application:", error);
+        setApplicationState("initial");
+      }
+    } else {
+      setApplicationState("initial");
+    }
+  };
+
+  const renderApplyButton = () => {
+    switch (applicationState) {
+      case "initial":
+        return (
+          <button
+            onClick={handleApplyClick}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20 active:scale-95"
+          >
+            <ExternalLink size={20} />
+            Apply Now
+          </button>
+        );
+
+      case "pending":
+        return (
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleApplicationChoice("applied")}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-500 rounded-full font-semibold transition-all"
+            >
+              <CheckCircle size={20} />
+              Applied
+            </button>
+            <button
+              onClick={() => handleApplicationChoice("skipped")}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-600 hover:bg-gray-500 rounded-full font-semibold transition-all"
+            >
+              <XCircle size={20} />
+              Skipped
+            </button>
+          </div>
+        );
+
+      case "applied":
+        return (
+          <div className="text-center">
+            <button
+              disabled
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-600 cursor-not-allowed rounded-full font-semibold opacity-75"
+            >
+              <CheckCircle size={20} />
+              Applied
+            </button>
+            <p className="text-sm text-gray-400 mt-2">Application recorded</p>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -225,17 +318,7 @@ const JobDetailsPage = () => {
                 </div>
               </div>
 
-              <div>
-                <a
-                  href={job.absolute_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20 active:scale-95"
-                >
-                  <ExternalLink size={20} />
-                  Apply Now
-                </a>
-              </div>
+              <div>{renderApplyButton()}</div>
             </div>
 
             {/* Job Content */}

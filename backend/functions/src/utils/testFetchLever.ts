@@ -55,7 +55,7 @@ const getExperienceLevel = (title: string): string => {
     return "Manager";
   } else if (lowercaseTitle.includes(" Staff ") || lowercaseTitle.includes(" Principal ")) {
     return "Staff";
-  } else if (lowercaseTitle.includes(" Junior ") || lowercaseTitle.includes(" Jr. ") || lowercaseTitle.includes(" Associate ") || lowercaseTitle.includes(" Assisstant ")) {
+  } else if (lowercaseTitle.includes(" Junior ") || lowercaseTitle.includes(" Jr. ") || lowercaseTitle.includes(" Associate ") || lowercaseTitle.includes(" Assisstant ") || lowercaseTitle.includes(" Intern ") || lowercaseTitle.includes(" Internship ")) {
     return "Junior";
   } else {
     return "Mid-level";
