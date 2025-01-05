@@ -3,8 +3,8 @@ import { listApplications , updateApplication ,addApplication }  from '../contro
 
 const router = Router();
 
-router.get('/', listApplications);
+router.get('/user/:userId', listApplications);
 router.get('/add', addApplication);
-router.get('/update', updateApplication);
+router.get('/update/:id', updateApplication);
 
 export default router;
