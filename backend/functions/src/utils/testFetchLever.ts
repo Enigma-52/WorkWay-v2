@@ -11,7 +11,8 @@ const {
 //TODO : EXPIRY CHECKER
 
 const companyNameList = [
-    "Accurate"
+    "Accurate",
+    "Dodmg",
 ]
 
 
@@ -41,21 +42,22 @@ const removeUndefined = (obj: any) => {
   );
 }
 
-// Function to determine experience level based on job title
 const getExperienceLevel = (title: string): string => {
-  const lowercaseTitle = title.toLowerCase();
+  const lowercaseTitle = ' ' + title.toLowerCase() + ' ';
   
-  if (lowercaseTitle.includes(" Founder ") || lowercaseTitle.includes(" Co-Founder ") || lowercaseTitle.includes(" Founding ")) {
+  if (lowercaseTitle.includes(" intern ") || lowercaseTitle.includes(" internship ")) {
+    return "Intern";
+  } else if (lowercaseTitle.includes(" founder ") || lowercaseTitle.includes(" co-founder ") || lowercaseTitle.includes(" founding ")) {
     return "Founding Team";
-  } else if (lowercaseTitle.includes(" Lead ") || lowercaseTitle.includes(" Architect ")) {
+  } else if (lowercaseTitle.includes(" lead ") || lowercaseTitle.includes(" architect ")) {
     return "Lead";
-  } else if (lowercaseTitle.includes(" Senior ") || lowercaseTitle.includes(" Sr. ")) {
+  } else if (lowercaseTitle.includes(" senior ") || lowercaseTitle.includes(" sr. ")) {
     return "Senior";
-  } else if (lowercaseTitle.includes(" Manager ") || lowercaseTitle.includes(" Director ")) {
+  } else if (lowercaseTitle.includes(" manager ") || lowercaseTitle.includes(" director ")) {
     return "Manager";
-  } else if (lowercaseTitle.includes(" Staff ") || lowercaseTitle.includes(" Principal ")) {
+  } else if (lowercaseTitle.includes(" staff ") || lowercaseTitle.includes(" principal ")) {
     return "Staff";
-  } else if (lowercaseTitle.includes(" Junior ") || lowercaseTitle.includes(" Jr. ") || lowercaseTitle.includes(" Associate ") || lowercaseTitle.includes(" Assisstant ") || lowercaseTitle.includes(" Intern ") || lowercaseTitle.includes(" Internship ")) {
+  } else if (lowercaseTitle.includes(" junior ") || lowercaseTitle.includes(" jr. ") || lowercaseTitle.includes(" associate ") || lowercaseTitle.includes(" assistant ")) {
     return "Junior";
   } else {
     return "Mid-level";
@@ -63,34 +65,34 @@ const getExperienceLevel = (title: string): string => {
 };
 
 const getEmploymentType = (title: string): string => {
-  const lowercaseTitle = title.toLowerCase();
+  const lowercaseTitle = ' ' + title.toLowerCase() + ' ';
   
-  if (lowercaseTitle.includes(" Internship ") || lowercaseTitle.includes(" Intern ") || lowercaseTitle.includes(" Trainee ")) {
-    return "Intern";
-  } else if (lowercaseTitle.includes(" Contract ") || lowercaseTitle.includes(" Temporary ")) {
+  if (lowercaseTitle.includes(" internship ") || lowercaseTitle.includes(" intern ") || lowercaseTitle.includes(" trainee ")) {
+    return "Part-Time";
+  } else if (lowercaseTitle.includes(" contract ") || lowercaseTitle.includes(" temporary ")) {
     return "Contract";
   } else {
-    return "Full-time";
+    return "Full-Time";
   }
 };
 
 // Function to determine domain based on job title
 const getDomain = (title: string): string => {
-  const lowercaseTitle = title.toLowerCase();
+  const lowercaseTitle = ' ' + title.toLowerCase() + ' ';
   
-  if (lowercaseTitle.includes(" Android ")) {
+  if (lowercaseTitle.includes(" android ")) {
     return "Android";
-  } else if (lowercaseTitle.includes(" Backend ") || lowercaseTitle.includes(" Back-End ") ) {
+  } else if (lowercaseTitle.includes(" backend ") || lowercaseTitle.includes(" back-end ") ) {
     return "Backend";
-  } else if (lowercaseTitle.includes(" Frontend ") || lowercaseTitle.includes(" Front-End ") ){
+  } else if (lowercaseTitle.includes(" frontend ") || lowercaseTitle.includes(" front-end ") ){
     return "Frontend";
-  } else if (lowercaseTitle.includes(" IOS ")) {
+  } else if (lowercaseTitle.includes(" ios ")) {
     return "iOS";
-  } else if (lowercaseTitle.includes(" Full Stack ") || lowercaseTitle.includes(" Fullstack ") || lowercaseTitle.includes(" Full-Stack ")) {
+  } else if (lowercaseTitle.includes(" full stack ") || lowercaseTitle.includes(" fullstack ") || lowercaseTitle.includes(" full-stack ")) {
     return "Full-stack";
-  } else if (lowercaseTitle.includes(" Devops ")) {
+  } else if (lowercaseTitle.includes(" devops ")) {
     return "DevOps";
-  } else if (lowercaseTitle.includes(" Data Scientist ") || lowercaseTitle.includes(" Data Science") || lowercaseTitle.includes(" Machine Learning ")) {
+  } else if (lowercaseTitle.includes(" data scientist ") || lowercaseTitle.includes(" data science") || lowercaseTitle.includes(" machine learning ")) {
     return "Data Science";
   } else {
     return "Other";
