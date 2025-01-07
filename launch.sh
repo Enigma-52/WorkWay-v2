@@ -47,17 +47,19 @@ check_node_modules() {
 
 # Check for node_modules in both directories
 check_node_modules "frontend"
-check_node_modules "backend"
+check_node_modules "backend/functions"
 
 # Start backend
 log "Starting backend server..."
-cd backend || exit 1
+cd backend/functions || exit 1
 npm run dev &
 BACKEND_PID=$!
 
 # Start frontend
 log "Starting frontend server..."
-cd ../frontend || exit 1
+cd ..
+cd ..
+cd frontend
 npm start &
 FRONTEND_PID=$!
 
