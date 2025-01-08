@@ -79,7 +79,14 @@ const JobDetailsPage = () => {
   const handleApplicationChoice = async (choice: "applied" | "skipped") => {
     if (choice === "applied") {
       try {
-        console.log(user);
+        const id = localStorage.getItem("userId");
+        const name = localStorage.getItem("name");
+        const email = localStorage.getItem("email");
+        const user = {
+          id: id,
+          name: name,
+          email: email,
+        };
         const response = await fetch(`${API_BASE_URL}/applications/add`, {
           method: "POST",
           headers: {
