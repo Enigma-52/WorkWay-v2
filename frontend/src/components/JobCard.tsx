@@ -14,6 +14,7 @@ import {
   Building2,
   DollarSign,
   Eye,
+  Flame,
 } from "lucide-react";
 import LoginModal from "./LoginModal";
 
@@ -36,6 +37,7 @@ interface Job {
     interval: string;
   };
   workplaceType?: string;
+  applicants?: number;
 }
 
 interface JobCardProps {
@@ -312,6 +314,11 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 10 }) => {
                           : job.salaryRange.interval === "per-hour-salary"
                           ? "/hour"
                           : ""}
+                      </span>
+                    )}
+                    {job?.applicants !== undefined && job.applicants >= 20 && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm bg-red-500/20 text-white-300 ml-2">
+                        <Flame size={20} /> Popular
                       </span>
                     )}
                   </div>
