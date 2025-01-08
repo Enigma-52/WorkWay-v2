@@ -7,6 +7,7 @@ import ApplicationsPage from "./pages/Applications";
 import JobDetailsPage from "./pages/JobDetailsPage";
 import DiscussionsPage from "./pages/DiscussionsPage";
 import ResumePage from "./pages/ResumePage";
+import ActivityMockPage from "./pages/ActivityMockPage";
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -36,6 +37,8 @@ function App() {
         <Route path="/job-details" element={<JobDetailsPage />} />
         <Route path="/discussions" element={<DiscussionsPage />} />
         <Route path="/resume" element={<ResumePage />} />
+        <Route path="/resume" element={<ResumePage />} />
+        <Route path="/activity" element={<ActivityMockPage />} />
       </Routes>
     </Router>
   );
