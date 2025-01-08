@@ -179,9 +179,9 @@ const LoginPage = () => {
       const data = await response.json();
       if (data) {
         localStorage.setItem("authToken", data.token);
-        localStorage.setItem("email", data.email);
-        localStorage.setItem("name", data.name);
-        localStorage.setItem("userId", data.uid);
+        localStorage.setItem("email", data.user.email);
+        localStorage.setItem("name", data.user.name);
+        localStorage.setItem("userId", data.user.uid);
 
         await new Promise((resolve) => setTimeout(resolve, 1500));
         navigate("/");
