@@ -326,9 +326,9 @@ const JobDetailsPage = () => {
                       <Code size={16} /> {job.domain}
                     </span>
                   )}
-                  {job?.applicants !== undefined && job.applicants >= 0 && (
+                  {job?.applicants !== undefined && job.applicants >= 20 && (
                     <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm bg-red-500/20 text-white-300 ml-2">
-                      <Flame size={16} /> Popular
+                      <Flame size={20} /> Popular
                     </span>
                   )}
                 </div>
