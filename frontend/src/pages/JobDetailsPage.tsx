@@ -79,6 +79,7 @@ const JobDetailsPage = () => {
   const handleApplicationChoice = async (choice: "applied" | "skipped") => {
     if (choice === "applied") {
       try {
+        console.log(user);
         const response = await fetch(`${API_BASE_URL}/applications/add`, {
           method: "POST",
           headers: {

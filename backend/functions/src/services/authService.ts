@@ -1,5 +1,8 @@
 import firebaseConfig from '../config/firebaseConfig.js';
 import { Timestamp, QuerySnapshot, DocumentData, query, where, limit } from 'firebase/firestore';
+import { sendOtpEmail } from './emailService.js';
+import bcrypt from 'bcrypt' ;
+
 
 const {
     db,
@@ -13,27 +16,10 @@ interface User {
     uid: string;
     email: string;
     name: string;
+    password: string;
 }
 
-export const signUpWithEmailAndPassword = async (email: string, password: string, name: string): Promise<User> => {
-    try {
-        const userRef = doc(collection(db, 'users'));
-        const user: User = {
-            uid: userRef.id,
-            email,
-            name
-        };
-        await setDoc(userRef, {
-            ...user,
-            password, // Note: Storing passwords in Firestore is not secure. Use proper hashing in production.
-        });
-        return user;
-    } catch (error) {
-        throw new Error('Error creating user: ' + (error as Error).message);
-    }
-};
-
-export const signinWithEmailAndPassword = async (email: string, password: string): Promise<User> => {
+export const signinWithEmailAndPassword = async (email: string, rawPassword: string): Promise<User> => {
     try {
         const usersRef = collection(db, 'users');
         const q = query(usersRef, where('email', '==', email), limit(1));
@@ -46,14 +32,16 @@ export const signinWithEmailAndPassword = async (email: string, password: string
         const userDoc = querySnapshot.docs[0];
         const userData = userDoc.data();
 
-        if (userData.password !== password) { // Note: Use proper password comparison in production
+        const match = await bcrypt.compare(rawPassword, userData.password);
+        if (!match) {
             throw new Error('Invalid password');
         }
 
         return {
             uid: userDoc.id,
             email: userData.email,
-            name: userData.name
+            name: userData.name,
+            password: userData.password
         };
     } catch (error) {
         throw new Error('Invalid email or password');
@@ -80,26 +68,31 @@ const generateOTP = (): string => {
     return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-export const sendOtp = async (email: string): Promise<void> => {
+export const sendOtp = async (email: string, name:string,password: string): Promise<void> => {
     try {
         const otp = generateOTP();
         const otpRef = doc(collection(db, 'otps'));
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
         await setDoc(otpRef, {
             email,
+            name,
             otp,
+            password : hashedPassword,
             createdAt: Timestamp.now(),
-            attempts: 0
+            attempts: 0,
         });
 
         console.log(`OTP for ${email}: ${otp}`);
-        // In a real application, send this OTP via email
+        await sendOtpEmail(email, otp);
     } catch (error) {
         throw new Error('Failed to send OTP: ' + (error as Error).message);
     }
 };
 
-export const verifyOtp = async (email: string, providedOtp: string): Promise<User> => {
+export const verifyOtp = async (email: string, providedOtp: string , name : string,rawPassword: string): Promise<User> => {
     try {
+        console.log("VERIFYING");
         const otpRef = collection(db, 'otps');
         const q = query(otpRef, where('email', '==', email), limit(1));
         const querySnapshot: QuerySnapshot<DocumentData> = await getDocs(q);
@@ -134,11 +127,16 @@ export const verifyOtp = async (email: string, providedOtp: string): Promise<Use
 
         if (userQuerySnapshot.empty) {
             // If the user doesn't exist, create a new account
+            const saltRounds = 10;
+            const password = await bcrypt.hash(rawPassword, saltRounds);
+
             const newUserRef = doc(collection(db, 'users'));
+            
             const newUser: User = {
                 uid: newUserRef.id,
                 email,
-                name: '' // You might want to collect the name separately
+                name,
+                password,
             };
             await setDoc(newUserRef, newUser);
             return newUser;
@@ -148,7 +146,8 @@ export const verifyOtp = async (email: string, providedOtp: string): Promise<Use
             return {
                 uid: userDoc.id,
                 email: userDoc.data().email,
-                name: userDoc.data().name
+                name: userDoc.data().name,
+                password: userDoc.data().password
             };
         }
     } catch (error) {
