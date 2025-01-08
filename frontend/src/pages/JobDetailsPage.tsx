@@ -74,18 +74,19 @@ const JobDetailsPage = () => {
     window.open(job?.absolute_url, "_blank");
   };
 
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   const handleApplicationChoice = async (choice: "applied" | "skipped") => {
     if (choice === "applied") {
       try {
-        // Replace with your actual API endpoint
-        const response = await fetch("/api/applications", {
+        const response = await fetch(`${API_BASE_URL}/applications/add`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            jobId: job?.id,
-            userId: user?.email,
+            job: job,
+            user: user,
             status: "applied",
           }),
         });

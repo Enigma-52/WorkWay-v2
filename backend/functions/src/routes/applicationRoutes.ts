@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router , RequestHandler } from 'express';
 import { listApplications , updateApplication ,addApplication }  from '../controllers/applicationController.js';
 
 const router = Router();
