@@ -39,6 +39,8 @@ const LoginPage = () => {
     name: "",
   });
 
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   const features: FeatureDetailed[] = [
     {
       icon: Globe2,
@@ -74,13 +76,55 @@ const LoginPage = () => {
     setIsLoading(true);
     try {
       if (isLogin) {
-        // Regular login flow
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        navigate("/dashboard");
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to send OTP");
+        }
+
+        const data = await response.json();
+        if (data) {
+          localStorage.setItem("authToken", data.token);
+          localStorage.setItem("email", data.user.email);
+          localStorage.setItem("name", data.user.name);
+          localStorage.setItem("userId", data.user.uid);
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+          navigate("/");
+        } else {
+          throw new Error(data.message || "Failed to send OTP");
+        }
       } else {
-        // Signup flow - send OTP
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        setShowOTP(true);
+        const response = await fetch(`${API_BASE_URL}/auth/send-otp`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            name: formData.name,
+            password: formData.password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to send OTP");
+        }
+
+        if (data) {
+          setShowOTP(true);
+        }
       }
     } catch (error) {
       console.error("Auth error:", error);
@@ -115,9 +159,33 @@ const LoginPage = () => {
   const handleVerifyOTP = async () => {
     setIsLoading(true);
     try {
-      // Simulate OTP verification
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      navigate("/dashboard");
+      const response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          otp: otp.join(""),
+          name: formData.name,
+          password: formData.password,
+        }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to verify OTP");
+      }
+
+      const data = await response.json();
+      if (data) {
+        localStorage.setItem("authToken", data.token);
+        localStorage.setItem("email", data.user.email);
+        localStorage.setItem("name", data.user.name);
+        localStorage.setItem("userId", data.user.uid);
+
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        navigate("/");
+      }
     } catch (error) {
       console.error("OTP verification error:", error);
     } finally {

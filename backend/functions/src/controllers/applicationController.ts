@@ -23,6 +23,8 @@ export const addApplication = async (
             });
         }
 
+        console.log(user);
+
         // Default status to "applied" if not provided
         const applicationStatus = status || 'applied';
 
