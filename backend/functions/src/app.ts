@@ -4,7 +4,7 @@ import routes from './routes/index.js';
 import fetch from './utils/fetcher.js';
 import connectRabbitMQ from './config/rabbitmq.js';
 import firebaseConfig from './config/firebaseConfig.js';
-import { consumeActivity } from './workers/worker.js';  // Import the worker
+import { consumeActivity } from '../../../rabbitmq-service/src/workers/worker.js';  // Import the worker
 
 const { 
     db,
@@ -49,6 +49,7 @@ app.use('/api/applications', routes.applicationRoutes);
 app.use('/api/jobAlerts', routes.jobAlertsRoutes);
 app.use('/api/resume' , routes.resumeRoutes);
 app.use('api/discussion' , routes.discussionRoutes);
+app.use('api/rabbitmq' , routes.rabbitmqRoutes);
 
 // Error handling middleware with proper types
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
