@@ -15,7 +15,7 @@
   "include": [
     "src/**/*",
     "node_modules/firebase"
-  ],
+, "../../rabbitmq-service/src/workers"  ],
   "exclude": [
     "node_modules"
   ]

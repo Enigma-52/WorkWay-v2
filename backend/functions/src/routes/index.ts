@@ -4,5 +4,6 @@ import applicationRoutes from './applicationRoutes.js';
 import jobAlertsRoutes from './jobAlertsRoutes.js';
 import resumeRoutes from './resumeRoutes.js';
 import discussionRoutes from './discussionRoutes.js';
+import rabbitmqRoutes from './rabbitmqRoutes.js';
 
-export default { jobRoutes, authRoutes, applicationRoutes, jobAlertsRoutes ,resumeRoutes,discussionRoutes};
+export default { jobRoutes, authRoutes, applicationRoutes, jobAlertsRoutes ,resumeRoutes,discussionRoutes,rabbitmqRoutes};
