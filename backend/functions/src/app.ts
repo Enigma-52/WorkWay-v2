@@ -57,7 +57,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 let channel: any;
 
-connectRabbitMQ().then(ch => channel = ch);
+//connectRabbitMQ().then(ch => channel = ch);
 
 app.post('/activities', (req, res) => {
   const activity = req.body;
