@@ -266,7 +266,7 @@ const JobDetailsPage = () => {
                   className="w-full h-full object-contain"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src =
-                      "https://via.placeholder.com/32?text=Logo";
+                      "https://logo.clearbit.com/loa.com";
                   }}
                 />
               </div>
