@@ -1,6 +1,5 @@
 import greenhouse from "./fetchGreenhouse.js";
 import lever from "./fetchLever.js";
-import getTop5LatestJobs from "./fetchLatestJobs";
 import pkg from '../config/firebaseConfig.js';
 const {
     db,

@@ -55,27 +55,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({ message: 'Something went wrong!' });
 });
 
-let channel: any;
-
 //connectRabbitMQ().then(ch => channel = ch);
-
-app.post('/activities', (req, res) => {
-  const activity = req.body;
-  channel.sendToQueue('activity_queue', Buffer.from(JSON.stringify(activity)));
-  res.status(200).send({ message: 'Activity Queued' });
-});
-
-app.get('/activities', async (req, res) => {
-    try {
-      const activityRef = collection(firebaseConfig.db, 'activities');
-      const snapshot = await getDocs(activityRef);
-      const activities = snapshot.docs.map(doc => doc.data());
-      res.status(200).json(activities);
-    } catch (error) {
-      console.error('Error fetching activities:', error);
-      res.status(500).send('Failed to fetch activities');
-    }
-  });
 
 app.listen(3005, () => {
     console.log('Server started on port 3005');
