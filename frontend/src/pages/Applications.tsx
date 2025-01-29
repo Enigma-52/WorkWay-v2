@@ -10,6 +10,7 @@ import {
   AlertCircle,
   ChevronDown,
   MapPin,
+  Bell,
   Plus,
   AlertCircle as AlertIcon,
 } from "lucide-react";
@@ -53,7 +54,7 @@ const ApplicationsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editingStatus, setEditingStatus] = useState<string | null>(null);
   const [newApplication, setNewApplication] = useState<NewApplication>({
@@ -81,20 +82,24 @@ const ApplicationsPage = () => {
 
   useEffect(() => {
     const initializeUser = () => {
-      const id = localStorage.getItem("userId");
-      const token = localStorage.getItem("authToken");
-      const name = localStorage.getItem("name");
-      const email = localStorage.getItem("email");
+      const id = localStorage.getItem("userId") || "";
+      const token = localStorage.getItem("authToken") || "";
+      const name = localStorage.getItem("name") || "";
+      const email = localStorage.getItem("email") || "";
 
+      console.log("HI");
       if (id && name && email && token) {
         const userData = { id, name, email };
         setIsLoggedIn(true);
         setUser(userData);
-        fetchApplications(id);
+        console.log("HI");
+
+        //fetchApplications(id);
       }
     };
 
     initializeUser();
+    console.log("HI");
   }, []);
 
   const fetchApplications = async (userId: string) => {
@@ -289,6 +294,38 @@ const ApplicationsPage = () => {
       <div className="container mx-auto px-4 py-8 max-w-6xl relative">
         <Navbar isLoggedIn={isLoggedIn} user={user} onLogout={handleLogout} />
 
+        <div className="py-3 px-6 text-center">
+          <div className="flex items-center justify-center gap-x-4 text-white/90 font-medium">
+            <div className="flex items-center gap-2 bg-purple-500/10 rounded-full px-4 py-1.5 border border-purple-400/20">
+              <span className="animate-pulse text-lg">✨</span>
+              <span className="text-sm font-semibold">Coming Soon</span>
+            </div>
+
+            <span className="text-sm">
+              Application Tracker feature is in development
+            </span>
+
+            <div className="flex items-center gap-2 bg-purple-500/10 rounded-full px-4 py-1.5 border border-purple-400/20">
+              <span className="h-2 w-2 rounded-full bg-purple-400 animate-pulse"></span>
+              <span className="text-sm font-light text-purple-200">
+                Beta Phase
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <style>{`
+ @keyframes gradient {
+   0% { background-position: 0% 50%; }
+   50% { background-position: 100% 50%; }
+   100% { background-position: 0% 50%; }
+ }
+ .animate-gradient {
+   background-size: 200% 200%;
+   animation: gradient 15s ease infinite;
+ }
+`}</style>
+
         {error && (
           <div className="mb-4 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400">
             {error}
@@ -314,11 +351,14 @@ const ApplicationsPage = () => {
               </p>
             </div>
             <button
-              onClick={() => setShowAddModal(true)}
-              className="bg-purple-700 hover:bg-purple-600 px-6 py-3 rounded-full font-semibold flex items-center transition-all duration-300 transform hover:scale-105"
+              disabled
+              className="bg-purple-700/50 px-6 py-3 rounded-full font-semibold flex items-center transition-all duration-300 cursor-not-allowed blur-[0.5px] relative group"
             >
               <Plus size={20} className="mr-2" />
               Add Application
+              <span className="absolute -top-3 -right-3 bg-purple-500 text-xs px-2 py-1 rounded-full animate-pulse">
+                Coming Soon
+              </span>
             </button>
           </div>
         </div>

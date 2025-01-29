@@ -42,7 +42,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, user, onLogout }) => {
           <Briefcase size={16} className="mr-2" />
           Applications
         </button>
-        {isLoggedIn ? (
+        {/* {isLoggedIn ? (
           <>
             <span className="text-white">{user?.name}</span>
             <button
@@ -61,7 +61,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, user, onLogout }) => {
             <User size={16} className="mr-2" />
             Log in
           </button>
-        )}
+        )} */}
       </div>
     </header>
   );

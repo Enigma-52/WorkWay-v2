@@ -27,7 +27,7 @@ const Footer: React.FC = () => {
                 Home
               </a>
             </li>
-            <li>
+            {/* <li>
               <a
                 href="/login"
                 className="text-gray-400 hover:text-white transition-colors duration-200"
@@ -35,7 +35,7 @@ const Footer: React.FC = () => {
               >
                 Login
               </a>
-            </li>
+            </li> */}
             <li>
               <a
                 href="/alerts"
