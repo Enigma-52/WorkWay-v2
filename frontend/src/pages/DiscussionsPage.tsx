@@ -477,6 +477,39 @@ Any suggestions would be greatly appreciated!`,
       <div className="container mx-auto px-4 py-8 max-w-6xl relative">
         <Navbar isLoggedIn={isLoggedIn} user={user} onLogout={handleLogout} />
 
+        {/* Beta Banner */}
+        <div className="py-3 px-6 text-center">
+          <div className="flex items-center justify-center gap-x-4 text-white/90 font-medium">
+            <div className="flex items-center gap-2 bg-purple-500/10 rounded-full px-4 py-1.5 border border-purple-400/20">
+              <span className="animate-pulse text-lg">✨</span>
+              <span className="text-sm font-semibold">Coming Soon</span>
+            </div>
+
+            <span className="text-sm">
+              Discussions feature is in development
+            </span>
+
+            <div className="flex items-center gap-2 bg-purple-500/10 rounded-full px-4 py-1.5 border border-purple-400/20">
+              <span className="h-2 w-2 rounded-full bg-purple-400 animate-pulse"></span>
+              <span className="text-sm font-light text-purple-200">
+                Beta Phase
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <style>{`
+ @keyframes gradient {
+   0% { background-position: 0% 50%; }
+   50% { background-position: 100% 50%; }
+   100% { background-position: 0% 50%; }
+ }
+ .animate-gradient {
+   background-size: 200% 200%;
+   animation: gradient 15s ease infinite;
+ }
+`}</style>
+
         {selectedPost ? (
           // Post Detail View
           <div className="animate-fadeIn">
