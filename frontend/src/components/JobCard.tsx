@@ -245,7 +245,7 @@ const JobCard: React.FC<JobCardProps> = ({ jobs, itemsPerPage = 10 }) => {
                     className="w-full h-full object-contain"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src =
-                        "https://via.placeholder.com/48?text=Logo";
+                        "https://logo.clearbit.com/loa.com";
                     }}
                   />
                 </div>

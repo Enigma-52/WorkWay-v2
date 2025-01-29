@@ -174,20 +174,34 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const fetchJobs = async () => {
+      const startTotal = performance.now();
       setIsLoading(true);
       setError(null);
+
       try {
+        // Measure API fetch
+        const fetchStart = performance.now();
         const token = process.env.REACT_APP_API_AUTH;
         const response = await fetch(`${API_BASE_URL}/jobs/all`, {});
+        console.log(
+          `Fetch time: ${(performance.now() - fetchStart).toFixed(2)}ms`
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
+        // Measure JSON parsing
+        const jsonStart = performance.now();
         const data = await response.json();
+        console.log(
+          `JSON parse time: ${(performance.now() - jsonStart).toFixed(2)}ms`
+        );
 
         let allJobs: Job[] = [];
 
+        // Measure data processing
+        const processStart = performance.now();
         if (Array.isArray(data.jobs)) {
           allJobs = data.jobs.flatMap((job: any) => {
             if (job && job.data && Array.isArray(job.data)) {
@@ -197,22 +211,37 @@ const HomePage: React.FC = () => {
             return [];
           });
         } else if (typeof data.jobs === "object" && data.jobs !== null) {
-          // If data.jobs is an object, assume it's a single job
           allJobs = [data.jobs];
         } else {
           console.error("Unexpected data structure:", data);
           throw new Error("Invalid data structure received from API");
         }
+        console.log(
+          `Data processing time: ${(performance.now() - processStart).toFixed(
+            2
+          )}ms`
+        );
 
-        // Sort jobs by updatedAt in descending order (most recent first)
+        // Measure sorting
+        const sortStart = performance.now();
         allJobs.sort(
           (a, b) =>
             new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
         );
+        console.log(
+          `Sorting time: ${(performance.now() - sortStart).toFixed(2)}ms`
+        );
 
-        console.log("Processed and sorted jobs:", allJobs); // Log the processed and sorted jobs
+        console.log("Processed and sorted jobs:", allJobs);
 
         setJobs(allJobs);
+
+        // Log total time
+        console.log(
+          `Total execution time: ${(performance.now() - startTotal).toFixed(
+            2
+          )}ms`
+        );
         setFilteredJobs(allJobs);
         setTotalJobs(allJobs.length);
       } catch (err) {

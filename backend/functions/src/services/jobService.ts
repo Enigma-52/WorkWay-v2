@@ -16,10 +16,7 @@ export const fetchAllJobs = async () => {
 
     const snapshot = await getDocs(jobsRef);
 
-    const jobs = [] as any;
-    snapshot.forEach(doc => {
-        jobs.push({ company: doc.id, ...doc.data() });
-    });
+    const jobs = snapshot.docs.map(doc => ({ company: doc.id, ...doc.data() }));
 
     return {
         jobs,
