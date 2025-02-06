@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction, RequestHandler } from 'express';
 import cors from 'cors';
 import routes from './routes/index.js';
 import fetch from './utils/fetcher.js';
@@ -16,17 +16,41 @@ const {
 const app = express();
 
 const corsOptions = {
-    origin: '*', // temporarily allow all origins for debugging
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
-    credentials: false  // change to false if not using cookies
+    origin: [
+      'http://localhost:5173',
+      'https://work-way-v2.vercel.app'
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    maxAge: 86400 // 24 hours
 };
 
+// Global middleware with correct type definition
+const corsMiddleware: RequestHandler = (req, res, next) => {
+    const origin = req.header('origin');
+    const allowedOrigin = corsOptions.origin.includes(origin || '') ? origin : corsOptions.origin[0];
+    
+    res.header('Access-Control-Allow-Origin', allowedOrigin);
+    res.header('Access-Control-Allow-Methods', corsOptions.methods.join(','));
+    res.header('Access-Control-Allow-Headers', corsOptions.allowedHeaders.join(','));
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Max-Age', corsOptions.maxAge.toString());
+    
+    if (req.method === 'OPTIONS') {
+        res.status(204).end();
+        return;
+    }
+    next();
+};
+
+// Apply CORS middlewares
+app.use(corsMiddleware);
 app.use(cors(corsOptions));
 
 app.use(express.json());
 
-// Routes with proper types
+// Base routes
 app.get('/', (req: Request, res: Response) => {
     res.status(200).json({ message: 'All good' });
 });
@@ -42,23 +66,21 @@ app.get('/cron', async (req: Request, res: Response) => {
     res.status(200).json({ message: 'Jobs Loaded' });
 });
 
+// API routes
 app.use('/api/jobs', routes.jobRoutes);
 app.use('/api/auth', routes.authRoutes);
 app.use('/api/applications', routes.applicationRoutes);
 app.use('/api/jobAlerts', routes.jobAlertsRoutes);
-app.use('/api/resume' , routes.resumeRoutes);
-app.use('api/discussion' , routes.discussionRoutes);
+app.use('/api/resume', routes.resumeRoutes);
+app.use('/api/discussion', routes.discussionRoutes);
 
-// Error handling middleware with proper types
+// Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error(err.stack);
     res.status(500).json({ message: 'Something went wrong!' });
 });
 
-//connectRabbitMQ().then(ch => channel = ch);
-
 app.listen(3005, () => {
-    console.log('Server started on port 3005');
-});
-
+    console.log('Server is running on port 3005');
+})
 export default app;
