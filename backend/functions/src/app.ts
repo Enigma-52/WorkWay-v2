@@ -26,26 +26,6 @@ const corsOptions = {
     maxAge: 86400 // 24 hours
 };
 
-// Global middleware with correct type definition
-const corsMiddleware: RequestHandler = (req, res, next) => {
-    const origin = req.header('origin');
-    const allowedOrigin = corsOptions.origin.includes(origin || '') ? origin : corsOptions.origin[0];
-    
-    res.header('Access-Control-Allow-Origin', allowedOrigin);
-    res.header('Access-Control-Allow-Methods', corsOptions.methods.join(','));
-    res.header('Access-Control-Allow-Headers', corsOptions.allowedHeaders.join(','));
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Max-Age', corsOptions.maxAge.toString());
-    
-    if (req.method === 'OPTIONS') {
-        res.status(204).end();
-        return;
-    }
-    next();
-};
-
-// Apply CORS middlewares
-app.use(corsMiddleware);
 app.use(cors(corsOptions));
 
 app.use(express.json());

@@ -37,6 +37,8 @@ export const getAllTestJobs = async (req: Request, res: Response) => {
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 100;
 
+        console.log("HELLOOO")
+
         // Validate pagination parameters
         if (page < 1 || limit < 1 || limit > 500) {
             return res.status(400).json({

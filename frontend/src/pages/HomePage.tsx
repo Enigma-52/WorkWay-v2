@@ -182,7 +182,7 @@ const HomePage: React.FC = () => {
         // Measure API fetch
         const fetchStart = performance.now();
         const token = process.env.REACT_APP_API_AUTH;
-        const response = await fetch(`${API_BASE_URL}/jobs/all`, {});
+        const response = await fetch(`${API_BASE_URL}/jobs/test/all`, {});
         console.log(
           `Fetch time: ${(performance.now() - fetchStart).toFixed(2)}ms`
         );
